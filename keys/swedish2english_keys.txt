@@ -29,7 +29,7 @@ bildskã¤rm:bildskã¤rm
 bildskärm:screen
 bluetooth:bluetooth
 bluetooth-version:Bluetooth version
-brand:Fire
+brand:brand
 bredd:width
 bruksanvisning:manual
 bruksanvisningar:manual
