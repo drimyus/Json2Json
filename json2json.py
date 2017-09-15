@@ -4,11 +4,11 @@ import sys
 
 import labels
 from swedish_keys import Swedish_Keys
-
+from labels import Label
 
 Structure = ["id", "title", "url", "image_url", "description",
-             "description_html", "rating_value", "price", "brand", "currency",
-             "category", "bulleted_text", "technical_specifications"]
+             "description_html", "rating_value", "price", "brand", "currency", "bulleted_text"]
+Sub_Structure = ["technical_specification"]
 Categories, Types = None, None
 
 
@@ -28,53 +28,49 @@ def load_SourceData(json_path):
 
 
 def parse_source_obj(json_obj):
-    list = []
+    dic_list = []
     for key, value in json_obj.items():
         key = key.lower()
 
         eng_key = swe2eng.translate_SweToEng(key)
 
-        # sys.stdout.write("swe: {}, eng: {}\n".format(key, eng_key))
-        str_type = eng_key
-        str_cat = "default_category"
-        if eng_key in Types:
-            str_cat = Categories[Types.index(eng_key)]
-
         if isinstance(value, dict):
-            tags = parse_source_obj(value)
-        else:
-            tags = None
-        list.append(create_tag_object(str_cat, str_type, value, tags))
+            value = parse_source_obj(value)
 
-    return list
+        dic_list.append(create_tag_object(eng_key, value))
+
+    return dic_list
 
 
-def create_tag_object(category, type, value, tags=None):
+def create_tag_object(src_key, src_value):
+
     id = uuid.uuid4()
-    if tags is not None:
-        return {"id": id,
-                "category": category,
-                "type": type,
-                "value": value,
-                "tags": tags}
+
+    tag = label.get_key2label(src_key=src_key)
+    if tag is None:
+        return
+    if tag["tar_value"] == "string":
+        dic = {
+            "id": id,
+            "category": tag["tar_category"],
+            "type": tag["tar_type"],
+            "value": src_value
+        }
+        return dic
     else:
-        return {"id": id,
-                "category": category,
-                "type": type,
-                "value": value}
+        pass
+
 
 
 if __name__ == '__main__':
 
-    labels_path = "./keys/labels.txt"
-    categories, types = labels.load_Labels_Table(labels_path)
+    """-------------------------Loading the Label data---------------------"""
+    label = Label()
 
-    # global Categories, Types
-    Categories = categories
-    Types = types
-
+    """-------------------------Create the dictionary object---------------"""
     swe2eng = Swedish_Keys()
 
+    """-------------------------Main Progress -----------------------------"""
     source_fname = "./data/sourcedata (1).json"
     load_SourceData(source_fname)
 

@@ -1,31 +1,54 @@
+import sys
 
-def load_Labels_Table(txt_path):
 
-    list = []
-    with open(txt_path) as f:
-        cnt = 0
-        for line in f:
-            cnt += 1
-            print(cnt, line)
+class Label:
+    def __init__(self, label_txt="./keys/labels.txt"):
+        self.label_txt = label_txt
 
-            [src_key, src_value, category, type, value, tags] = line[:-1].split(':')
-            category.lower().replace('"', '')
-            type.lower().replace('"', '')
-            value.lower().replace('"', '')
-            tags.lower().replace('"', '')
+        self.labels = []
 
-            dic = {
-                'key': src_key,
-                'category': category,
-                'type': type,
-                'value': value,
-                'tags': tags
-            }
+        self.labels = self.load_Labels_Table()
 
-            list.append(dic)
+    def load_Labels_Table(self):
 
-    return list
+        list = []
+        with open(self.label_txt, encoding='utf-8') as f:
+            cnt = 0
+            for line in f:
+                cnt += 1
+                # print(cnt, line)
 
-if __name__ == '__main__':
-    label_txt_path = "./keys/labels.txt"
-    load_Labels_Table(label_txt_path)
+                [src_key, src_value, category, type, value, tags] = line[:-1].split(':')
+                src_key.lower().replace('"', '')
+                src_value.lower().replace('"', '')
+
+                category.lower().replace('"', '')
+                type.lower().replace('"', '')
+                value.lower().replace('"', '')
+                tags.lower().replace('"', '')
+
+                dic = {
+                    "src_key": src_key,
+                    "src_value": src_value,
+                    "tar_category": category,
+                    "tar_type": type,
+                    "tar_value": value,
+                    "tar_tags": tags
+                }
+
+                list.append(dic)
+        return list
+
+    def get_key2label(self, src_key):
+        for dic in self.labels:
+            if src_key == dic["src_key"]:
+                return dic
+        sys.stdout.write("{} is not in Label table\n".format(src_key))
+
+if __name__ == "__main__":
+
+    label = Label()
+
+    print(label.get_key2label("id"))
+
+
