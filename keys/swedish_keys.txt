@@ -1,0 +1,255 @@
+$oid
+3d-teknik
+3g
+3g (umts)
+4g lte
+_id
+allmã¤nt
+allmänt
+anslutningar
+antal celler
+antal hã¥rddiskar
+antal hårddiskar
+antal kameror
+antal kã¤rnor
+antal kärnor
+antal tryckpunkter
+anvã¤ndarhandbok
+användarhandbok
+autofokus
+availability
+bakbelysning
+bakgrundsbelyst tangentbord
+bashastighet
+batteri
+batterikapacitet
+batterityp
+bildformat
+bildskã¤rm
+bildskärm
+bluetooth
+bluetooth-version
+brand
+bredd
+bruksanvisning
+bruksanvisningar
+bruksanvisningar och dokument
+brã¤nnarprogram
+brännarprogram
+bulleted_text
+category
+chassi
+chipset
+condition
+csv_file_row_index
+currency
+dedikerat grafikminne
+delat grafikminne
+description
+description_html
+digital ljudutgã¥ng (koaxial)
+digital ljudutgã¥ng (optisk)
+digital ljudutgång (koaxial)
+digital ljudutgång (optisk)
+digital zoom
+display
+displayport
+djup
+dockningsmã¶jlighet
+dockningsmöjlighet
+drifttid (upp till)
+drivrutiner
+drivrutiner och mjukvara
+dvi
+effekt nã¤tdel
+effekt nätdel
+esata-portar
+expansionskort
+fast nã¤tverk
+fast nã¤tverksanslutning
+fast nätverk
+fast nätverksanslutning
+fingeravtryckslã¤sare
+fingeravtrycksläsare
+fjã¤rrkontroll
+fjärrkontroll
+fã¤rg
+fã¶rinstallerade appar
+fã¶rpackningens innehã¥ll
+färg
+förinstallerade appar
+förpackningens innehåll
+garanti batteri
+garanti hã¥rdvara
+garanti hårdvara
+geotaggning
+grafik och ljud
+grafikkort
+grafikkortsklass
+grafikprocessor
+hastighet hdd #1
+hastighet hdd #2
+hastighet hdd #3
+hdmi
+hdmi-version
+hã¶gtalare
+hã¶jd
+hã¶rlursutgã¥ng
+högtalare
+höjd
+hörlursutgång
+id
+image_url
+inbyggd blixt
+inbyggd mikrofon
+inbyggd navigation
+inbyggda hã¶gtalare
+inbyggda högtalare
+interna kortplatser
+ir
+kamera
+kommunikation
+kontorsprogram
+laddning via usb
+lagring
+lediga minnesplatser
+lediga pci
+lediga pci x1
+lediga pci-e x16
+ljudformat som stã¶ds
+ljudformat som stöds
+ljudkort
+main
+manual
+manualer och dokumentation
+material
+max fps vid inspelning
+max turbo
+max upplã¶sning stillbild
+max upplã¶sning video
+max upplösning stillbild
+max upplösning video
+maximal upplã¶sning
+maximal upplösning
+maximalt minne
+mikrofoningã¥ng
+mikrofoningång
+minne
+minne och lagring
+minne som ingã¥r
+minne som ingår
+minneshastighet
+minneskortlã¤sare
+minneskortläsare
+minneskortstorlek (max)
+minnesplatser
+minnesstorlek
+minnestyp
+mjukvara
+modell
+multi-touch
+mus
+numerisk sifferdel
+operativsystem
+optisk enhet
+pci
+pci x1
+pci-e x16
+pekdon
+pivot-funktion
+price
+primã¤r hã¥rddiskstorlek
+primã¤r hã¥rddisktyp
+primär hårddiskstorlek
+primär hårddisktyp
+processor
+processormodell
+processorserie
+produktblad
+produktblad (engelskt)
+produktsupport
+ram-minne
+rating_value
+reptã¥lig
+reptålig
+rj45
+sekundã¤r hã¥rddiskstorlek
+sekundã¤r hã¥rddisktyp
+sekundär hårddiskstorlek
+sekundär hårddisktyp
+skã¤rmstorlek
+skã¤rmteknik
+skã¤rmtyp
+skã¤rmupplã¶sning
+skã¤rmyta
+skärmstorlek
+skärmteknik
+skärmtyp
+skärmupplösning
+skärmyta
+snabbstartsguide
+specialfunktioner
+stã¶d fã¶r 3d
+stã¶d fã¶r ip-telefoni
+stã¶d fã¶r kensingtonlã¥s
+stã¶d fã¶r nfc
+stã¶d fã¶r rã¶stsamtal
+stöd för 3d
+stöd för ip-telefoni
+stöd för kensingtonlås
+stöd för nfc
+stöd för röstsamtal
+sub_1
+sub_2
+subwoofer
+support och garanti
+supportnummer
+system on chip (soc)
+tangentbord
+technical_specifications
+tertiã¤r hã¥rddiskstorlek
+tertiã¤r hã¥rddisktyp
+tertiär hårddiskstorlek
+tertiär hårddisktyp
+thunderbolt
+thunderbolt 2
+thunderbolt 3
+tillv art nr
+tillverkare
+tillverkarens artikelnummer
+title
+touchskã¤rm
+touchskärm
+touchteknik
+trã¥dlã¶st nã¤tverk
+trådlöst nätverk
+tv-mottagare
+typ av mus
+typ av sim-kort
+typ av tangentbord
+typ av usb-anslutning
+upplã¶sning frã¤mre kamera
+upplã¶sning stillbild
+upplã¶sning video
+upplösning främre kamera
+upplösning stillbild
+upplösning video
+url
+usb 20-portar
+usb 30-portar
+usb 31-portar
+valbara sprã¥k
+valbara språk
+vga
+vikt
+virusskydd
+webbkamera
+widi
+ã¶vriga anslutningar
+ã¶vriga funktioner
+ã¶vriga programvaror
+ã¶vrigt
+övriga anslutningar
+övriga funktioner
+övriga programvaror
+övrigt
