@@ -1,54 +1,65 @@
-category:tag
-identifier:brand
-identifier:id
-identifier:customer_id
-identifier:name
-identifier:id_creator
-identifier:id_netonnet
-identifier:kind
-identifier:model
-identifier:version
-identifier:release
-identifier:series
-meta:image
-meta:url
-meta:description
-meta:title
-meta:number
-parent:tag
-subpart:product
-subpart:component
-quality:color
-quality:property
-feature:is
-feature:has
-feature:certificate
-feature:warranty
-software:os
-software:preinstalled
-hardware:cores
-powersource:type
-connection:type
-communication:type
-technology:technology
-technology:backlight
-technology:panel
-usp:id
-price:discount
-price:original
-size:quantity
-size:length
-size:height
-size:width
-size:weight
-size :ratio
-size:resolution
-size:duration
-unit:math
-unit:currency
-unit :time
-unit:metric
-unit:imperial
-unit:speed
-unit:frequency
-unit :storage
+KEY:VALUE:CATEGORY:TYPE:VALUE:TAGS
+::category:tag::
+Manufacturer::identifier:brand::
+brand:string:identifier:brand:string:
+::identifier:id::
+::identifier:customer_id::
+::identifier:name::
+Add Art No.:string:identifier:id_creator::
+id:value:identifier:id_netonnet:value:
+::identifier:kind::
+Memory Included:{}:identifier:kind:"working_memory":
+Primary Hard Drive Size:{}:identifier:kind:"storage":
+Model::identifier :model::
+::identifier:version::
+::identifier:release::
+Processor Series::identifier:series::
+image_url:url:meta:image:url:
+url:url:meta:url:url:
+description_html:string:meta:description:string:
+description:string:meta:description:string:
+title:string:meta:title:string:
+Support Number:string:meta:number:string:
+::parent:tag::
+::subpart:product::
+memory:{}:subpart:component::{}
+Graphics and Audio::subpart:component::
+processor::subpart:component::
+storage:{}:subpart:component::{}
+::quality :color::
+::quality :property::
+::feature:is::
+::feature:has::
+::feature:certificate::
+Support and Warranty:{}:feature:warranty:"hardware":{}
+Operating System::software:os::
+::software:preinstalled::
+Number of kernels::hardware:cores::
+::powersource:type::
+connections:{}:connection:type::{}
+Fixed Network:{}:communication:type::{}
+Wireless Network::communication:type::{tech-tech}
+Memory type:string:technology:technology:string:
+Primary Hard Drive Type:string:technology:technology:string:
+::technology:backlight::
+::technology:panel::
+::usp:id::
+::price:discount::
+::price:original::
+storage unit::size:quantity:value:
+::size:length::
+height:value:size:height:value:{}
+width:value:size:width:value:
+::size:weight::
+::size :ratio::
+::size:resolution::
+::size:duration::
+::unit:math::
+curreny:string:unit:currency:string:
+month::unit :time:"month":
+mm::unit:metric:"millimetre":
+::unit:imperial::
+MHz, Mbps::unit:speed:"MHZ":
+::unit:frequency::
+GB, MB, KB::unit :storage:"GB":
+rating_value:value:category:meta:value:
