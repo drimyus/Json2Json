@@ -22,24 +22,31 @@ def load_SourceData(json_path):
             source_obj = json.loads(line)
             product_obj = parse_source_obj(source_obj)
 
-            data.append(product_obj)
+            print(product_obj)
+            # data.append(product_obj)
             break
 
 
 def parse_source_obj(json_obj):
-
+    list = []
     for key, value in json_obj.items():
         key = key.lower()
 
         eng_key = swe2eng.translate_SweToEng(key)
 
         # sys.stdout.write("swe: {}, eng: {}\n".format(key, eng_key))
+        str_type = eng_key
+        str_cat = "default_category"
+        if eng_key in Types:
+            str_cat = Categories[Types.index(eng_key)]
 
         if isinstance(value, dict):
-            subdict = parse_source_obj(value)
-
+            tags = parse_source_obj(value)
         else:
-            pass
+            tags = None
+        list.append(create_tag_object(str_cat, str_type, value, tags))
+
+    return list
 
 
 def create_tag_object(category, type, value, tags=None):

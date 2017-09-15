@@ -4,16 +4,16 @@ import os
 
 
 class Swedish_Keys:
-    def __init__(self, raw_json="", swe_txt="./keys/swedish_keys.txt", eng_txt="./keys/english_keys.txt"):
+    def __init__(self, raw_json="", swe_txt="./keys/swedish_keys.txt", swe2eng_txt="./keys/swedish2english_keys.txt"):
 
         self.raw_json = raw_json
         self.swe_txt = swe_txt
-        self.eng_txt = eng_txt
+        self.swe2eng_txt = swe2eng_txt
 
         self.swe_keys, self.eng_keys = [], []
 
-        if os.path.isfile(eng_txt) and os.path.isfile(swe_txt):
-            self.load_Swedish2English_Key_Dict(swe_txt, eng_txt)
+        if os.path.isfile(swe2eng_txt):
+            self.load_Swedish2English_Key_Dict(swe2eng_txt)
         else:
             sys.stderr.write("incorrect dictionary txt file {}.\n".format(eng_txt))
 
@@ -41,16 +41,13 @@ class Swedish_Keys:
             if key.lower() not in self.swe_keys:
                 self.swe_keys.append(key.lower())
 
-    def load_Swedish2English_Key_Dict(self, swe_path, eng_path):
-        with open(swe_path) as f:
+    def load_Swedish2English_Key_Dict(self, swe2eng_path):
+        with open(swe2eng_path, encoding='utf-8') as f:
             for line in f:
-                swe = line[:-1]
+                [swe, eng] = line[:-1].split(":")
                 self.swe_keys.append(swe.lower())
-        with open(eng_path) as f:
-            for line in f:
-                eng = line[:-1]
                 self.eng_keys.append(eng.lower())
-        sys.stdout.write("swedish_keys: {}, english_keys: {}".format(len(self.swe_keys), len(self.eng_keys)))
+        # sys.stdout.write("swedish_keys: {}, english_keys: {}".format(len(self.swe_keys), len(self.eng_keys)))
 
     def translate_SweToEng(self, swe_key):
         if len(self.swe_keys) == 0 or len(self.eng_keys) == 0:

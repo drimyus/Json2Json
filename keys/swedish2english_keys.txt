@@ -1,0 +1,255 @@
+$oid:$ oid
+3d-teknik:3D technology
+3g:3g
+3g (umts):3g (umts)
+4g lte:4g lte
+_id:_id
+allmã¤nt:allmã¤nt
+allmänt:generally
+anslutningar:connections
+antal celler:number of cells
+antal hã¥rddiskar:number of hard disk drives
+antal hårddiskar:number of hard disks
+antal kameror:number of cameras
+antal kã¤rnor:number of passes
+antal kärnor:number of cores
+antal tryckpunkter:number of pressure points
+anvã¤ndarhandbok:anvã¤ndarhandbok
+användarhandbok:manual
+autofokus:AF
+availability:availability
+bakbelysning:backlighting
+bakgrundsbelyst tangentbord:backlit keyboard
+bashastighet:base speed
+batteri:Battery
+batterikapacitet:battery capacity
+batterityp:battery
+bildformat:aspect ratio
+bildskã¤rm:bildskã¤rm
+bildskärm:screen
+bluetooth:bluetooth
+bluetooth-version:Bluetooth version
+brand:Fire
+bredd:width
+bruksanvisning:manual
+bruksanvisningar:manual
+bruksanvisningar och dokument:instructions and documents
+brã¤nnarprogram:brã¤nnarprogram
+brännarprogram:Burn
+bulleted_text:bulleted_text
+category:Category
+chassi:chassis
+chipset:chip
+condition:Condition
+csv_file_row_index:csv_file_row_index
+currency:currency
+dedikerat grafikminne:dedicated graphics memory
+delat grafikminne:shared graphics memory
+description:Description
+description_html:description_html
+digital ljudutgã¥ng (koaxial):digital audio output (coaxial)
+digital ljudutgã¥ng (optisk):digital audio output (optical)
+digital ljudutgång (koaxial):digital audio output (coaxial)
+digital ljudutgång (optisk):digital audio output (optical)
+digital zoom:digital zoom
+display:display
+displayport:DisplayPort
+djup:depth
+dockningsmã¶jlighet:dockningsmã¶jlighet
+dockningsmöjlighet:docking possibility
+drifttid (upp till):operating time (up to)
+drivrutiner:drivers
+drivrutiner och mjukvara:drivers and software
+dvi:dvi
+effekt nã¤tdel:power utility
+effekt nätdel:power power supply
+esata-portar:eSATA ports
+expansionskort:expansion
+fast nã¤tverk:fixed network
+fast nã¤tverksanslutning:fixed network connection
+fast nätverk:fixed network
+fast nätverksanslutning:fixed network connection
+fingeravtryckslã¤sare:fingeravtryckslã¤sare
+fingeravtrycksläsare:fingerprint reader
+fjã¤rrkontroll:Remote control
+fjärrkontroll:remote control
+fã¤rg:color
+fã¶rinstallerade appar:preinstalled apps
+fã¶rpackningens innehã¥ll:the packaging contents
+färg:color
+förinstallerade appar:preinstalled apps
+förpackningens innehåll:contents of the package
+garanti batteri:warranty battery
+garanti hã¥rdvara:warranty product
+garanti hårdvara:warranty hardware
+geotaggning:geotag
+grafik och ljud:graphics and sounds
+grafikkort:video card
+grafikkortsklass:video card class
+grafikprocessor:GPU
+hastighet hdd #1:speed hdd # 1
+hastighet hdd #2:speed hdd # 2
+hastighet hdd #3:speed hdd # 3
+hdmi:HDMI
+hdmi-version:HDMI version
+hã¶gtalare:hã¶gtalare
+hã¶jd:altitude
+hã¶rlursutgã¥ng:hã¶rlursutgã ¥ ng
+högtalare:speaker
+höjd:height
+hörlursutgång:headphone output
+id:id
+image_url:image_url
+inbyggd blixt:built-in flash
+inbyggd mikrofon:built-in microphone
+inbyggd navigation:built-in navigation
+inbyggda hã¶gtalare:built-in loudspeaker
+inbyggda högtalare:built-in speakers
+interna kortplatser:internal card slots
+ir:ir
+kamera:camera
+kommunikation:communication
+kontorsprogram:office applications
+laddning via usb:charging via usb
+lagring:storage
+lediga minnesplatser:free memory locations
+lediga pci:available pci
+lediga pci x1:available pci x1
+lediga pci-e x16:available pci-e x16
+ljudformat som stã¶ds:audio format as supported
+ljudformat som stöds:supported audio formats
+ljudkort:sound card
+main:main
+manual:manual
+manualer och dokumentation:manuals and documentation
+material:material
+max fps vid inspelning:max fps at recording
+max turbo:max turbo
+max upplã¶sning stillbild:max resolution still image
+max upplã¶sning video:max resolution video
+max upplösning stillbild:max resolution still image
+max upplösning video:max resolution video
+maximal upplã¶sning:maximum resolution
+maximal upplösning:maximum resolution
+maximalt minne:maximum memory
+mikrofoningã¥ng:mikrofoningã ¥ ng
+mikrofoningång:mic
+minne:memory
+minne och lagring:memory and storage
+minne som ingã¥r:memory included
+minne som ingår:memory included
+minneshastighet:memory speed
+minneskortlã¤sare:minneskortlã¤sare
+minneskortläsare:memory card reader
+minneskortstorlek (max):memory card size (max)
+minnesplatser:memory
+minnesstorlek:memory size
+minnestyp:memory
+mjukvara:software
+modell:model
+multi-touch:multi-touch
+mus:mouse
+numerisk sifferdel:numerical numeral
+operativsystem:OS
+optisk enhet:optical unit
+pci:PCI
+pci x1:pci x1
+pci-e x16:pci-e x16
+pekdon:pointing device
+pivot-funktion:pivot-function
+price:price
+primã¤r hã¥rddiskstorlek:Primary is hard drive size
+primã¤r hã¥rddisktyp:primary is the type of disk
+primär hårddiskstorlek:primary hard drive size
+primär hårddisktyp:primary hard drive type
+processor:processor
+processormodell:processor model
+processorserie:processor series
+produktblad:product sheet
+produktblad (engelskt):product sheet (English)
+produktsupport:product support
+ram-minne:RAM memory
+rating_value:RATING_VALUE
+reptã¥lig:Repta ¥ Resistant
+reptålig:scratch
+rj45:RJ45
+sekundã¤r hã¥rddiskstorlek:Secondary, the hard disk size
+sekundã¤r hã¥rddisktyp:Secondary is the hard disk type
+sekundär hårddiskstorlek:secondary hard drive size
+sekundär hårddisktyp:secondary hard drive type
+skã¤rmstorlek:skã¤rmstorlek
+skã¤rmteknik:skã¤rmteknik
+skã¤rmtyp:skã¤rmtyp
+skã¤rmupplã¶sning:skã¤rmupplã¶sning
+skã¤rmyta:skã¤rmyta
+skärmstorlek:screen size
+skärmteknik:display technology
+skärmtyp:display_type
+skärmupplösning:screen resolution
+skärmyta:screen surface
+snabbstartsguide:Quick Start guide
+specialfunktioner:special functions
+stã¶d fã¶r 3d:stÃ¶d fοr 3d
+stã¶d fã¶r ip-telefoni:support for IP telephony
+stã¶d fã¶r kensingtonlã¥s:support for kensington lãs
+stã¶d fã¶r nfc:stã¶d fÃ¶r nfc
+stã¶d fã¶r rã¶stsamtal:support for voice calls
+stöd för 3d:support for 3d
+stöd för ip-telefoni:support for IP telephony
+stöd för kensingtonlås:support for kensington lock
+stöd för nfc:support for nfc
+stöd för röstsamtal:support for voice calls
+sub_1:sub_1
+sub_2:sub_2
+subwoofer:subwoofer
+support och garanti:support and warranty
+supportnummer:support number
+system on chip (soc):system on chip (soc)
+tangentbord:keyboard
+technical_specifications:technical_specifications
+tertiã¤r hã¥rddiskstorlek:tertiary hard disk size
+tertiã¤r hã¥rddisktyp:tertiary, hard disk type
+tertiär hårddiskstorlek:tertiary hard drive size
+tertiär hårddisktyp:tertiary hard drive type
+thunderbolt:thunderbolt
+thunderbolt 2:thunderbolt 2
+thunderbolt 3:thunderbolt 3
+tillv art nr:also available in Art
+tillverkare:manufacturer
+tillverkarens artikelnummer:Manufacturer Part Number
+title:title
+touchskã¤rm:touchskã¤rm
+touchskärm:touch screen
+touchteknik:touch technology
+trã¥dlã¶st nã¤tverk:Trendy Network
+trådlöst nätverk:Wireless Network
+tv-mottagare:televisions
+typ av mus:type of mouse
+typ av sim-kort:type of sim card
+typ av tangentbord:type of keyboard
+typ av usb-anslutning:kind of usb connection
+upplã¶sning frã¤mre kamera:resolution of camera
+upplã¶sning stillbild:resolution still image
+upplã¶sning video:dissolving video
+upplösning främre kamera:resolution front camera
+upplösning stillbild:resolution still image
+upplösning video:resolution video
+url:url
+usb 20-portar:usb 20 ports
+usb 30-portar:usb 30 ports
+usb 31-portar:usb 31 ports
+valbara sprã¥k:selectable languages
+valbara språk:selectable languages
+vga:vga
+vikt:weight
+virusskydd:Virus
+webbkamera:Cam
+widi:WiDi
+ã¶vriga anslutningar:Other connections
+ã¶vriga funktioner:Other features
+ã¶vriga programvaror:Other software
+ã¶vrigt:ã¶vrigt
+övriga anslutningar:other connections
+övriga funktioner:other features
+övriga programvaror:other software
+övrigt:Other
