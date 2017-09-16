@@ -1,8 +1,8 @@
 import json
 import uuid
 import sys
+import re
 
-import labels
 from swedish_keys import Swedish_Keys
 from labels import Label
 
@@ -101,7 +101,7 @@ def _storage(key, value):
                 dics.extend(sub_dics)
 
             elif sub_key is "primary hard drive type".lower():
-                sub_dic = create_tag("technology", "technology", value)
+                sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
         subpart_dic = create_tag("subpart", "commponent", dics)
@@ -124,7 +124,7 @@ def _memory(key, value):
                 dics.extend(sub_dics)
 
             elif sub_key is "memory type".lower():
-                sub_dic = create_tag("technology", "technology", value)
+                sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
             elif sub_key is "memory speed".lower():
@@ -173,22 +173,106 @@ def _chassis(key, value):
 
             if sub_key is "Height".lower():
                 [quantity, unit] = sub_value.split(" ")
-                sub_dics = create_tag("size", "height", quantity, create_tag("size", "quantity", unit))
+                if unit.lower() == "mm":
+                    unit = "millimetre"
+                if unit.lower() == "cm":
+                    unit = "centimetre"
+                sub_dics = create_tag("size", "height", quantity, create_tag("unit", "metric", unit))
                 dics.extend(sub_dics)
 
             elif sub_key is "RJ45".lower():
-                sub_dics = create_tag("connection", "type", "rj45", create_tag("size", "quantity", sub_value))
-                dics.extend(sub_dics)
-
-            elif sub_key is "usb 30 port".lower():
-                sub_dics = create_tag("connection", "type", "usb30", create_tag("size", "quantity", sub_value))
-                dics.extend(sub_dics)
-
-            elif sub_key is "thunderbolt".lower():
-                sub_dics = create_tag("connection", "type", "thunderbolt", create_tag("size", "quantity", sub_value))
+                [quantity, unit] = sub_value.split(" ")
+                if unit.lower() == "mm":
+                    unit = "millimetre"
+                if unit.lower() == "cm":
+                    unit = "centimetre"
+                sub_dics = create_tag("size", "width", quantity, create_tag("unit", "metric", unit))
                 dics.extend(sub_dics)
 
         return dics
+
+
+def _support_warranty(key, value):
+
+    if isinstance(value, dict):
+        dics = []
+        for sub_key, sub_value in value.items():
+
+            if sub_key is "Support Number".lower():
+                sub_dics = create_tag("meta", "number", sub_value)
+                dics.extend(sub_dics)
+
+            elif sub_key is "Warranty Hardware".lower():
+                [quantity, unit] = sub_value.split(" ")
+                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "time", unit))
+                dics.extend(sub_dics)
+
+        feature_dic = create_tag("feature", "warranty", "hardware", dics)
+        return feature_dic
+
+
+def _communication(key, value):
+
+    if isinstance(value, dict):
+        dics = []
+        for sub_key, sub_val in value.items():
+
+            if sub_key is "Wireless Network".lower():
+                sub_dics = create(create_tag("technology", "technology", sub_val))
+                super_dic = create(create_tag("communication", "type", "wifi", sub_dics))
+                dics.extend(super_dic)
+
+            if sub_key is "Fixed Network".lower():
+                [qua_unit, _] = sub_val.split(" ")
+                quantity = re.findall(qua_unit)[0]
+
+                sub_dics = create(create_tag("size", "quantity", quantity, create_tag("unit", "speed", "Mbit/s")))
+                super_dic = create(create_tag("communication", "type", "wifi", sub_dics))
+                dics.extend(super_dic)
+
+            return dics
+
+
+def _processor(key, value):
+
+    dics = []
+    for sub_key, sub_value in value.items():
+
+        sub_dics = create_tag("identifier", "kind", "cpu")
+        dics.extend(sub_dics)
+
+        if sub_key is "Manufacturer".lower():
+            sub_dic = create_tag("identifier", "brand", sub_value)
+            dics.extend(sub_dic)
+
+        if sub_key is "Model".lower():
+            sub_dic = create_tag("identifier", "model", sub_value)
+            dics.extend(sub_dic)
+
+        if sub_key is "Processor Series".lower():
+            sub_dic = create_tag("identifier", "series", sub_value)
+            dics.extend(sub_dic)
+
+        if sub_key is "Bass Speed".lower():
+            [quantity, unit] = sub_value.split(" ")
+            tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "base")]
+            sub_dics = create_tag("size", "quantity", quantity, tags)
+            dics.extend(sub_dics)
+
+        if sub_key is "Max Turbo".lower():
+            [quantity, unit] = sub_value.split(" ")
+            tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "boost")]
+            sub_dics = create_tag("size", "quantity", quantity, tags)
+            dics.extend(sub_dics)
+
+        elif sub_key is "Number of Kernels".lower():
+            [quantity, unit] = sub_value.split(" ")
+            sub_dic = create_tag("hardward", "cores", quantity)
+            dics.extend(sub_dic)
+
+    subpart_dic = create_tag("subpart", "commponent", dics)
+    usp_dic = create_tag("usp", "id", None, subpart_dic["id"])
+    return [subpart_dic, usp_dic]
 
 
 def create_tag(category, type, value=None, tags=None):
