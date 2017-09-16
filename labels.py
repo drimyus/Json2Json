@@ -43,7 +43,7 @@ class Label:
         for dic in self.labels:
             if src_key == dic["src_key"]:
                 return dic
-        sys.stdout.write("{} is not in Label table\n".format(src_key))
+        # sys.stdout.write("{} is not in Label table\n".format(src_key))
 
 if __name__ == "__main__":
 
