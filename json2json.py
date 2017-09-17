@@ -171,7 +171,7 @@ def _storage(value):
                 dics.extend(sub_dic)
 
         subpart_dic = create_tag("subpart", "commponent", None, dics)
-        usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
+        usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
         return [subpart_dic, usp_dic]
 
 
@@ -204,7 +204,7 @@ def _memory(value):
                 dics.extend(sub_dics)
 
         subpart_dic = create_tag("subpart", "commponent", None, dics)
-        usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
+        usp_dic = create_tag("usp", "id",  subpart_dic[0]["id"], None)
         subpart_dic.extend(usp_dic)
         return subpart_dic
 
@@ -363,7 +363,7 @@ def _processor(value):
             dics.extend(sub_dic)
 
     subpart_dic = create_tag("subpart", "commponent", None, dics)
-    usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
+    usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
     subpart_dic.extend(usp_dic)
     return subpart_dic
 
@@ -395,7 +395,7 @@ def _graphs_audio(value):
                 dics.extend(sub_dic)
 
     subpart_dic = create_tag("subpart", "commponent", None, dics)
-    usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
+    usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
     subpart_dic.extend(usp_dic)
     return subpart_dic
 
