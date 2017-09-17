@@ -15,15 +15,18 @@ Categories, Types = None, None
 def load_SourceData(json_path):
 
     # load source data json
-    # fname = "./product
+    cnt = 0
+    origin = "./data/result/product"
     with open(json_path, encoding='utf-8') as f:
         for line in f:
-
+            cnt += 1
+            fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
             product_obj = parse_line(source_obj)
+            with open(fname, 'w') as pro_file:
+                json.dump(product_obj, pro_file)
 
-            print(product_obj)
-            break
+            # print(product_obj)
 
 
 def parse_line(json_obj):
@@ -123,28 +126,28 @@ def tech_specs(key, value):
     dics = None
 
     if key == "Storage".lower():
-        dics = _storage(key, value)
+        dics = _storage(value)
     elif key == "Memory".lower():
-        dics = _memory(key, value)
+        dics = _memory(value)
     elif key == "Connenctions".lower():
-        dics = _connections(key, value)
+        dics = _connections(value)
     elif key == "Chassis".lower():
-        dics = _chassis(key, value)
+        dics = _chassis(value)
     elif key == "Support and Warranty".lower():
-        dics = _support_warranty(key, value)
+        dics = _support_warranty(value)
     elif key == "Communication".lower():
-        dics = _communication(key, value)
+        dics = _communication(value)
     elif key == "Processor".lower():
-        dics = _processor(key, value)
+        dics = _processor(value)
     elif key == "Graphics and Audio".lower() or "Graphics and Sounds":
-        dics = _graphs_audio(key, value)
+        dics = _graphs_audio(value)
     elif key == "General".lower():
-        dics = _general(key, value)
+        dics = _general(value)
 
     return dics
 
 
-def _storage(key, value):
+def _storage(value):
     if isinstance(value, dict):
         dics = []
         sub_dics = create_tag("identifier", "kind", "storage")
@@ -167,7 +170,7 @@ def _storage(key, value):
         return [subpart_dic, usp_dic]
 
 
-def _memory(key, value):
+def _memory(value):
     if isinstance(value, dict):
         dics = []
         sub_dics = create_tag("identifier", "kind", "working_memory")
@@ -186,7 +189,10 @@ def _memory(key, value):
                 dics.extend(sub_dic)
 
             elif sub_key == "memory speed".lower():
-                [quantity, unit] = sub_value.split(" ")
+                qua_unit = sub_value.split(" ")
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                if len(qua_unit) != 2:
+                    break
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
@@ -195,7 +201,7 @@ def _memory(key, value):
         return [subpart_dic, usp_dic]
 
 
-def _connections(key, value):
+def _connections(value):
 
     if isinstance(value, dict):
         dics = []
@@ -221,7 +227,7 @@ def _connections(key, value):
         return dics
 
 
-def _chassis(key, value):
+def _chassis(value):
 
     if isinstance(value, dict):
         dics = []
@@ -229,7 +235,10 @@ def _chassis(key, value):
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
             if sub_key == "Height".lower():
-                [quantity, unit] = sub_value.split(" ")
+                qua_unit = sub_value.split(" ")
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                if len(qua_unit) != 2:
+                    break
                 if unit.lower() == "mm":
                     unit = "millimetre"
                 if unit.lower() == "cm":
@@ -249,7 +258,7 @@ def _chassis(key, value):
         return dics
 
 
-def _support_warranty(key, value):
+def _support_warranty(value):
 
     if isinstance(value, dict):
         dics = []
@@ -261,7 +270,10 @@ def _support_warranty(key, value):
                 dics.extend(sub_dics)
 
             elif sub_key == "Warranty Hardware".lower():
-                [quantity, unit] = sub_value.split(" ")
+                qua_unit = sub_value.split(" ")
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                if len(qua_unit) != 2:
+                    break
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "time", unit))
                 dics.extend(sub_dics)
 
@@ -269,7 +281,7 @@ def _support_warranty(key, value):
         return feature_dic
 
 
-def _communication(key, value):
+def _communication(value):
 
     if isinstance(value, dict):
         dics = []
@@ -282,17 +294,16 @@ def _communication(key, value):
                 dics.extend(super_dic)
 
             if sub_key == "Fixed Network".lower():
-                [qua_unit, res] = sub_val.split(" ")
-                quantity = re.findall(qua_unit)[0]
+                qua_unit = sub_val.split(" ")
+                quantity = qua_unit[0][:qua_unit[0].find('bit/s')-1]
 
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "speed", "Mbit/s"))
                 super_dic = create_tag("communication", "type", "wifi", sub_dics)
                 dics.extend(super_dic)
+        return dics
 
-            return dics
 
-
-def _processor(key, value):
+def _processor(value):
 
     dics = []
     sub_dics = create_tag("identifier", "kind", "cpu")
@@ -319,7 +330,10 @@ def _processor(key, value):
             dics.extend(sub_dics)
 
         if sub_key == "Max Turbo".lower():
-            [quantity, unit] = sub_value.split(" ")
+            qua_unit = sub_value.split(" ")
+            quantity, unit = qua_unit[0], qua_unit[-1]
+            if len(qua_unit) != 2:
+                break
             tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "boost")]
             sub_dics = create_tag("size", "quantity", quantity, tags)
             dics.extend(sub_dics)
@@ -334,7 +348,7 @@ def _processor(key, value):
     return [subpart_dic, usp_dic]
 
 
-def _graphs_audio(key, value):
+def _graphs_audio(value):
 
     dics = []
     sub_dics = create_tag("identifier", "kind", "working_memory")
@@ -344,7 +358,8 @@ def _graphs_audio(key, value):
         sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
         if sub_key == "Dedicated graphics memory".lower():
-            [quantity, unit] = sub_value.split(" ")
+            qua_unit = sub_value.split(" ")
+            quantity, unit = qua_unit[0], qua_unit[-1]
             sub_dic = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
             dics.extend(sub_dic)
 
@@ -360,7 +375,7 @@ def _graphs_audio(key, value):
     return [subpart_dic, usp_dic]
 
 
-def _general(key, value):
+def _general(value):
 
     if isinstance(value, dict):
         dics = []
@@ -375,12 +390,12 @@ def _general(key, value):
                 sub_dics = create(create_tag("software", "os", sub_val))
                 dics.extend(sub_dics)
 
-            return dics
+        return dics
 
 
 def create_tag(category, type, value=None, tags=None):
     tag = {
-        "id": uuid.uuid4(),
+        "id": str(uuid.uuid4()),
         "category": category,
         "type": type,
     }
