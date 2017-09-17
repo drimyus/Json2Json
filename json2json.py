@@ -10,6 +10,8 @@ Structure = ["id", "title", "url", "image_url", "description",
 Sub_Structure = ["technical_specification"]
 Categories, Types = None, None
 
+global_id = "e5a05170-7f44-45ed-bd49-1b2ced344e81"
+
 
 def load_SourceData(json_path):
 
@@ -64,14 +66,24 @@ def high_level(key, value, json_object):
                 dics.extend(create_tag("meta", "image", val))
     elif key == "description".lower():
         dics = create_tag("meta", "description", value)
-        # dics = create_tag("meta", "description", "DES")
     elif key == "description_html".lower():
         new_value = erase_description_html(value)
         dics = create_tag("meta", "description_html", new_value)
-        # dics = create_tag("meta", "description_html", "DES_#")
 
-    # elif key == "rating_value".lower():
-    #     dics = create_tag("meta", "rating_value", value)
+    elif key == "Category".lower():
+        if isinstance(value, dict):
+            str = None
+            for sub_key, sub_value in value.items():
+
+                if sub_value.lower().find("desktop") != -1:
+                    str = "desktop"
+                    break
+                elif sub_value.lower().find("laptop") != -1:
+                    str = "laptop"
+                    break
+            if str is not None:
+                dics = create_tag("category", "tag", str, create_tag("parent", "tag", global_id))
+
     elif key == "bulleted_text".lower():
         dics = create_tag("meta", "description", value)
 
@@ -437,5 +449,7 @@ if __name__ == '__main__':
 
     """-------------------------Main Progress -----------------------------"""
     source_fname = "./data/sourcedata (1).json"
+
+    global_id = "e5a05170-7f44-45ed-bd49-1b2ced344e81"
     load_SourceData(source_fname)
 
