@@ -191,8 +191,7 @@ def _storage(value):
 def _memory(value):
     if isinstance(value, dict):
         dics = []
-        sub_dics = create_tag("identifier", "kind", "working_memory")
-        dics.extend(sub_dics)
+
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
@@ -216,10 +215,15 @@ def _memory(value):
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
-        subpart_dic = create_tag("subpart", "commponent", None, dics)
-        usp_dic = create_tag("usp", "id",  subpart_dic[0]["id"], None)
-        subpart_dic.extend(usp_dic)
-        return subpart_dic
+        if len(dics) != 0:
+            sub_dics = create_tag("identifier", "kind", "working_memory")
+            dics.extend(sub_dics)
+            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            usp_dic = create_tag("usp", "id",  subpart_dic[0]["id"], None)
+            subpart_dic.extend(usp_dic)
+            return subpart_dic
+        else:
+            return dics
 
 
 def _connections(value):
@@ -332,88 +336,92 @@ def _communication(value):
 
 
 def _processor(value):
+    if isinstance(value, dict):
+        dics = []
+        sub_dics = create_tag("identifier", "kind", "cpu")
+        dics.extend(sub_dics)
+        for sub_key, sub_value in value.items():
+            sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-    dics = []
-    sub_dics = create_tag("identifier", "kind", "cpu")
-    dics.extend(sub_dics)
-    for sub_key, sub_value in value.items():
-        sub_key = swe2eng.translate_SweToEng(sub_key.lower())
+            if sub_key == "Manufacturer".lower():
+                sub_dic = create_tag("identifier", "brand", sub_value)
+                dics.extend(sub_dic)
 
-        if sub_key == "Manufacturer".lower():
-            sub_dic = create_tag("identifier", "brand", sub_value)
-            dics.extend(sub_dic)
+            if sub_key == "Model".lower():
+                sub_dic = create_tag("identifier", "model", sub_value)
+                dics.extend(sub_dic)
 
-        if sub_key == "Model".lower():
-            sub_dic = create_tag("identifier", "model", sub_value)
-            dics.extend(sub_dic)
+            if sub_key == "Processor Series".lower():
+                sub_dic = create_tag("identifier", "series", sub_value)
+                dics.extend(sub_dic)
 
-        if sub_key == "Processor Series".lower():
-            sub_dic = create_tag("identifier", "series", sub_value)
-            dics.extend(sub_dic)
+            if sub_key == "Base Speed".lower() or sub_key == "Bass Speed".lower():
+                [quantity, unit] = sub_value.split(" ")
+                unit = swe2eng.translate_SweToEng(unit)
+                tags = []
+                tags.extend(create_tag("unit", "frequency", unit))
+                tags.extend(create_tag("identifier", "version", "base"))
+                sub_dics = create_tag("size", "quantity", quantity, tags)
+                dics.extend(sub_dics)
 
-        if sub_key == "Base Speed".lower() or sub_key == "Bass Speed".lower():
-            [quantity, unit] = sub_value.split(" ")
-            unit = swe2eng.translate_SweToEng(unit)
-            tags = []
-            tags.extend(create_tag("unit", "frequency", unit))
-            tags.extend(create_tag("identifier", "version", "base"))
-            sub_dics = create_tag("size", "quantity", quantity, tags)
-            dics.extend(sub_dics)
+            if sub_key == "Max Turbo".lower():
+                qua_unit = sub_value.split(" ")
 
-        if sub_key == "Max Turbo".lower():
-            qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    break
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                unit = swe2eng.translate_SweToEng(unit)
+                tags = []
+                tags.extend(create_tag("unit", "frequency", unit))
+                tags.extend(create_tag("identifier", "version", "boost"))
+                sub_dics = create_tag("size", "quantity", quantity, tags)
+                dics.extend(sub_dics)
 
-            if len(qua_unit) != 2:
-                break
-            quantity, unit = qua_unit[0], qua_unit[-1]
-            unit = swe2eng.translate_SweToEng(unit)
-            tags = []
-            tags.extend(create_tag("unit", "frequency", unit))
-            tags.extend(create_tag("identifier", "version", "boost"))
-            sub_dics = create_tag("size", "quantity", quantity, tags)
-            dics.extend(sub_dics)
+            elif sub_key == "Number of Kernels".lower() or sub_key == "Number of Cores".lower():
+                [quantity, unit] = sub_value.split(" ")
+                sub_dic = create_tag("hardward", "cores", quantity)
+                dics.extend(sub_dic)
 
-        elif sub_key == "Number of Kernels".lower() or sub_key == "Number of Cores".lower():
-            [quantity, unit] = sub_value.split(" ")
-            sub_dic = create_tag("hardward", "cores", quantity)
-            dics.extend(sub_dic)
-
-    subpart_dic = create_tag("subpart", "commponent", None, dics)
-    usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-    subpart_dic.extend(usp_dic)
-    return subpart_dic
+        subpart_dic = create_tag("subpart", "commponent", None, dics)
+        usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+        subpart_dic.extend(usp_dic)
+        return subpart_dic
 
 
 def _graphs_audio(value):
 
-    dics = []
-    sub_dics = create_tag("identifier", "kind", "working_memory")
-    dics.extend(sub_dics)
+    if isinstance(value, dict):
+        dics = []
 
-    for sub_key, sub_value in value.items():
-        sub_key = swe2eng.translate_SweToEng(sub_key.lower())
+        for sub_key, sub_value in value.items():
+            sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-        if sub_key == "Dedicated graphics memory".lower():
-            qua_unit = sub_value.split(" ")
-            if len(qua_unit) != 2:
-                break
-            quantity, unit = qua_unit[0], qua_unit[-1]
-            unit = swe2eng.translate_SweToEng(unit)
+            if sub_key == "Dedicated graphics memory".lower():
+                qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    break
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                unit = swe2eng.translate_SweToEng(unit)
 
-            sub_dic = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
-            dics.extend(sub_dic)
-
-        if sub_key == "Graphics Card".lower():
-            sub_dic = create_tag("identifier", "name", sub_value)
-            dics.extend(sub_dic)
-            if sub_value.find("AMD") != -1:
-                sub_dic = create_tag("identifier", "brand", "AMD")
+                sub_dic = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
                 dics.extend(sub_dic)
 
-    subpart_dic = create_tag("subpart", "commponent", None, dics)
-    usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-    subpart_dic.extend(usp_dic)
-    return subpart_dic
+            if sub_key == "Graphics Card".lower():
+                sub_dic = create_tag("identifier", "name", sub_value)
+                dics.extend(sub_dic)
+                if sub_value.find("AMD") != -1:
+                    sub_dic = create_tag("identifier", "brand", "AMD")
+                    dics.extend(sub_dic)
+
+        if len(dics) != 0:
+            sub_dics = create_tag("identifier", "kind", "working_memory")
+            dics.extend(sub_dics)
+            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+            subpart_dic.extend(usp_dic)
+            return subpart_dic
+        else:
+            return dics
 
 
 def _general(value):
