@@ -2,7 +2,7 @@ import json
 import uuid
 import sys
 import re
-
+import html
 from swedish_keys import Swedish_Keys
 
 Structure = ["id", "title", "url", "image_url", "description",
@@ -64,11 +64,10 @@ def high_level(key, value, json_object):
             dics = []
             for val in value:
                 dics.extend(create_tag("meta", "image", val))
-    elif key == "description".lower():
-        dics = create_tag("meta", "description", value)
+
     elif key == "description_html".lower():
         new_value = erase_description_html(value)
-        dics = create_tag("meta", "description_html", new_value)
+        dics = create_tag("meta", "description", new_value)
 
     elif key == "Category".lower():
         if isinstance(value, dict):
@@ -131,10 +130,12 @@ def erase_description_html(string):
         end = string.find('"', start + 6)
         if start != -1 and end != -1:
             url = string[start+5:end]
-            string = string.replace(url, "")
+            string = string.replace('"' + url + '"', "''")
             pos = start
         else:
             break
+
+    string = string.replace('\"', '\'')
     return string
 
 
