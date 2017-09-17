@@ -350,10 +350,12 @@ def _processor(value):
             sub_dic = create_tag("identifier", "series", sub_value)
             dics.extend(sub_dic)
 
-        if sub_key == "Bass Speed".lower():
+        if sub_key == "Base Speed".lower() or sub_key == "Bass Speed".lower():
             [quantity, unit] = sub_value.split(" ")
             unit = swe2eng.translate_SweToEng(unit)
-            tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "base")]
+            tags = []
+            tags.extend(create_tag("unit", "frequency", unit))
+            tags.extend(create_tag("identifier", "version", "base"))
             sub_dics = create_tag("size", "quantity", quantity, tags)
             dics.extend(sub_dics)
 
@@ -364,12 +366,13 @@ def _processor(value):
                 break
             quantity, unit = qua_unit[0], qua_unit[-1]
             unit = swe2eng.translate_SweToEng(unit)
-
-            tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "boost")]
+            tags = []
+            tags.extend(create_tag("unit", "frequency", unit))
+            tags.extend(create_tag("identifier", "version", "boost"))
             sub_dics = create_tag("size", "quantity", quantity, tags)
             dics.extend(sub_dics)
 
-        elif sub_key == "Number of Kernels".lower():
+        elif sub_key == "Number of Kernels".lower() or sub_key == "Number of Cores".lower():
             [quantity, unit] = sub_value.split(" ")
             sub_dic = create_tag("hardward", "cores", quantity)
             dics.extend(sub_dic)
