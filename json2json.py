@@ -325,7 +325,7 @@ def _communication(value):
                 quantity = qua_unit[0][:qua_unit[0].find('bit/s')-1]
 
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "speed", "Mbit/s"))
-                super_dic = create_tag("communication", "type", "wifi", sub_dics)
+                super_dic = create_tag("communication", "type", "ethernet", sub_dics)
                 dics.extend(super_dic)
         return dics
 
