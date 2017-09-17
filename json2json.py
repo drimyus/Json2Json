@@ -37,7 +37,7 @@ def parse_line(json_obj):
         # key = key.lower()
         eng_key = swe2eng.translate_SweToEng(key.lower())
 
-        high_level_dic = high_level(eng_key, value)
+        high_level_dic = high_level(eng_key, value, json_obj)
 
         if high_level_dic is None:
             print(key, value)
@@ -47,7 +47,7 @@ def parse_line(json_obj):
     return dic_list
 
 
-def high_level(key, value):
+def high_level(key, value, json_object):
 
     dics = None
 
@@ -77,9 +77,12 @@ def high_level(key, value):
         dics = create_tag("meta", "description", value)
 
     elif key == "price".lower():
-        dics = create_tag("price", "original", value)
-    elif key == "currency".lower():
-        dics = create_tag("unit", "currency", value)
+        if "currency" in json_object.keys():
+            sub_value = json_object["currency"]
+            dics = create_tag("price", "original", value, create_tag("unit", "currency", sub_value))
+        else:
+            pass
+
     elif key == "brand".lower():
         dics = create_tag("identifier", "brand", value)
 
