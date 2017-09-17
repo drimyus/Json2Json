@@ -23,8 +23,10 @@ def load_SourceData(json_path):
             fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
             product_obj = parse_line(source_obj)
-            with open(fname, 'w') as pro_file:
-                json.dump(product_obj, pro_file)
+            with open(fname, 'w', encoding='utf-8') as pro_file:
+                # pro_file.write(str(product_obj))
+                json.dump(product_obj, pro_file, ensure_ascii=False, indent=2)
+            break
 
             # print(product_obj)
 
@@ -383,11 +385,11 @@ def _general(value):
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
             if sub_key == "Add Ard No.".lower():
-                sub_dics = create(create_tag("identifier", "id_creator", sub_val))
+                sub_dics = create_tag("identifier", "id_creator", sub_val)
                 dics.extend(sub_dics)
 
             if sub_key == "Operating System".lower():
-                sub_dics = create(create_tag("software", "os", sub_val))
+                sub_dics = create_tag("software", "os", sub_val)
                 dics.extend(sub_dics)
 
         return dics
