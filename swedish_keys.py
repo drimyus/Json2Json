@@ -15,7 +15,7 @@ class Swedish_Keys:
         if os.path.isfile(swe2eng_txt):
             self.load_Swedish2English_Key_Dict(swe2eng_txt)
         else:
-            sys.stderr.write("incorrect dictionary txt file {}.\n".format(eng_txt))
+            sys.stderr.write("incorrect dictionary txt file {}.\n".format(swe2eng_txt))
 
     def explore_Swedish_Keys(self, json_path):
         txt_path = self.swe_txt
@@ -54,11 +54,11 @@ class Swedish_Keys:
             sys.stderr.write("plesae init the dictionary.\n")
             sys.exit(1)
         else:
-            try:
+            if swe_key in self.swe_keys:
                 idx = self.swe_keys.index(swe_key)
                 return self.eng_keys[idx]
-            except Exception as ex:
-                print(ex)
+            else:
+                return swe_key
 
 
 if __name__ == '__main__':

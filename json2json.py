@@ -4,7 +4,6 @@ import sys
 import re
 
 from swedish_keys import Swedish_Keys
-from labels import Label
 
 Structure = ["id", "title", "url", "image_url", "description",
              "description_html", "rating_value", "price", "brand", "currency", "bulleted_text"]
@@ -163,6 +162,7 @@ def _storage(value):
 
             if sub_key == "primary hard drive size".lower():
                 [quantity, unit] = sub_value.split(" ")
+                unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
                 dics.extend(sub_dics)
 
@@ -186,6 +186,7 @@ def _memory(value):
             if sub_key == "memory Include".lower():
 
                 [quantity, unit] = sub_value.split(" ")
+                unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
                 dics.extend(sub_dics)
 
@@ -198,6 +199,7 @@ def _memory(value):
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 if len(qua_unit) != 2:
                     break
+                unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
@@ -241,9 +243,12 @@ def _chassis(value):
 
             if sub_key == "Height".lower():
                 qua_unit = sub_value.split(" ")
-                quantity, unit = qua_unit[0], qua_unit[-1]
                 if len(qua_unit) != 2:
                     break
+
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                unit = swe2eng.translate_SweToEng(unit)
+
                 if unit.lower() == "mm":
                     unit = "millimetre"
                 if unit.lower() == "cm":
@@ -253,6 +258,7 @@ def _chassis(value):
 
             elif sub_key == "RJ45".lower():
                 [quantity, unit] = sub_value.split(" ")
+                unit = swe2eng.translate_SweToEng(unit)
                 if unit.lower() == "mm":
                     unit = "millimetre"
                 if unit.lower() == "cm":
@@ -276,9 +282,12 @@ def _support_warranty(value):
 
             elif sub_key == "Warranty Hardware".lower():
                 qua_unit = sub_value.split(" ")
-                quantity, unit = qua_unit[0], qua_unit[-1]
+
                 if len(qua_unit) != 2:
                     break
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                unit = swe2eng.translate_SweToEng(unit)
+
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "time", unit))
                 dics.extend(sub_dics)
 
@@ -330,15 +339,19 @@ def _processor(value):
 
         if sub_key == "Bass Speed".lower():
             [quantity, unit] = sub_value.split(" ")
+            unit = swe2eng.translate_SweToEng(unit)
             tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "base")]
             sub_dics = create_tag("size", "quantity", quantity, tags)
             dics.extend(sub_dics)
 
         if sub_key == "Max Turbo".lower():
             qua_unit = sub_value.split(" ")
-            quantity, unit = qua_unit[0], qua_unit[-1]
+
             if len(qua_unit) != 2:
                 break
+            quantity, unit = qua_unit[0], qua_unit[-1]
+            unit = swe2eng.translate_SweToEng(unit)
+
             tags = [create_tag("unit", "frequency", unit), create_tag("identifier", "version", "boost")]
             sub_dics = create_tag("size", "quantity", quantity, tags)
             dics.extend(sub_dics)
@@ -364,7 +377,11 @@ def _graphs_audio(value):
 
         if sub_key == "Dedicated graphics memory".lower():
             qua_unit = sub_value.split(" ")
+            if len(qua_unit) != 2:
+                break
             quantity, unit = qua_unit[0], qua_unit[-1]
+            unit = swe2eng.translate_SweToEng(unit)
+
             sub_dic = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
             dics.extend(sub_dic)
 
@@ -411,9 +428,6 @@ def create_tag(category, type, value=None, tags=None):
     return [tag]
 
 if __name__ == '__main__':
-
-    """-------------------------Loading the Label data---------------------"""
-    label = Label()
 
     """-------------------------Create the dictionary object---------------"""
     swe2eng = Swedish_Keys()

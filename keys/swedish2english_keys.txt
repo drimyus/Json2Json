@@ -253,3 +253,6 @@ widi:WiDi
 övriga funktioner:other features
 övriga programvaror:other software
 övrigt:Other
+GB:GB
+mån:month
+mm:mm

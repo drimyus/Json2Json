@@ -253,3 +253,6 @@ widi
 övriga funktioner
 övriga programvaror
 övrigt
+GB
+mån
+mm
