@@ -205,7 +205,8 @@ def _memory(value):
 
         subpart_dic = create_tag("subpart", "commponent", dics)
         usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
-        return [subpart_dic, usp_dic]
+        subpart_dic.extend(usp_dic)
+        return subpart_dic
 
 
 def _connections(value):
@@ -363,7 +364,8 @@ def _processor(value):
 
     subpart_dic = create_tag("subpart", "commponent", dics)
     usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
-    return [subpart_dic, usp_dic]
+    subpart_dic.extend(usp_dic)
+    return subpart_dic
 
 
 def _graphs_audio(value):
@@ -394,7 +396,8 @@ def _graphs_audio(value):
 
     subpart_dic = create_tag("subpart", "commponent", dics)
     usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
-    return [subpart_dic, usp_dic]
+    subpart_dic.extend(usp_dic)
+    return subpart_dic
 
 
 def _general(value):
