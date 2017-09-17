@@ -70,8 +70,8 @@ def high_level(key, value, json_object):
         dics = create_tag("meta", "description_html", new_value)
         # dics = create_tag("meta", "description_html", "DES_#")
 
-    elif key == "rating_value".lower():
-        dics = create_tag("meta", "rating_value", value)
+    # elif key == "rating_value".lower():
+    #     dics = create_tag("meta", "rating_value", value)
     elif key == "bulleted_text".lower():
         dics = create_tag("meta", "description", value)
 
