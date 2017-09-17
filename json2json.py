@@ -17,19 +17,20 @@ def load_SourceData(json_path):
 
     # load source data json
     cnt = 0
-    origin = "./data/result/product"
+    origin = "./data/result/new_product"
     with open(json_path, encoding='utf-8') as f:
         for line in f:
             cnt += 1
+            sys.stdout.write("\r{}".format(cnt))
+
             fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
             product_obj = parse_line(source_obj)
             with open(fname, 'w', encoding='utf-8') as pro_file:
                 # pro_file.write(str(product_obj))
                 json.dump(product_obj, pro_file, ensure_ascii=False, indent=2)
-            break
 
-            # print(product_obj)
+            sys.stdout.flush()
 
 
 def parse_line(json_obj):
@@ -41,8 +42,9 @@ def parse_line(json_obj):
         high_level_dic = high_level(eng_key, value, json_obj)
 
         if high_level_dic is None:
-            print(key, value)
+            # print(key, value)
             continue
+
         dic_list.extend(high_level_dic)
 
     return dic_list
@@ -167,13 +169,13 @@ def tech_specs(key, value):
 def _storage(value):
     if isinstance(value, dict):
         dics = []
-        sub_dics = create_tag("identifier", "kind", "storage")
-        dics.extend(sub_dics)
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
             if sub_key == "primary hard drive size".lower():
+                if len(sub_value.split(" ")) != 2:
+                    break
                 [quantity, unit] = sub_value.split(" ")
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
@@ -183,9 +185,14 @@ def _storage(value):
                 sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
-        subpart_dic = create_tag("subpart", "commponent", None, dics)
-        usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-        return [subpart_dic, usp_dic]
+        if len(dics) != 0:
+            sub_dics = create_tag("identifier", "kind", "storage")
+            dics.extend(sub_dics)
+            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+            return [subpart_dic, usp_dic]
+        else:
+            return dics
 
 
 def _memory(value):
@@ -338,8 +345,7 @@ def _communication(value):
 def _processor(value):
     if isinstance(value, dict):
         dics = []
-        sub_dics = create_tag("identifier", "kind", "cpu")
-        dics.extend(sub_dics)
+
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
@@ -356,17 +362,17 @@ def _processor(value):
                 dics.extend(sub_dic)
 
             if sub_key == "Base Speed".lower() or sub_key == "Bass Speed".lower():
-                [quantity, unit] = sub_value.split(" ")
-                unit = swe2eng.translate_SweToEng(unit)
-                tags = []
-                tags.extend(create_tag("unit", "frequency", unit))
-                tags.extend(create_tag("identifier", "version", "base"))
-                sub_dics = create_tag("size", "quantity", quantity, tags)
-                dics.extend(sub_dics)
+                if len(sub_value.split(" ")) == 2:
+                    [quantity, unit] = sub_value.split(" ")
+                    unit = swe2eng.translate_SweToEng(unit)
+                    tags = []
+                    tags.extend(create_tag("unit", "frequency", unit))
+                    tags.extend(create_tag("identifier", "version", "base"))
+                    sub_dics = create_tag("size", "quantity", quantity, tags)
+                    dics.extend(sub_dics)
 
             if sub_key == "Max Turbo".lower():
                 qua_unit = sub_value.split(" ")
-
                 if len(qua_unit) != 2:
                     break
                 quantity, unit = qua_unit[0], qua_unit[-1]
@@ -378,14 +384,20 @@ def _processor(value):
                 dics.extend(sub_dics)
 
             elif sub_key == "Number of Kernels".lower() or sub_key == "Number of Cores".lower():
-                [quantity, unit] = sub_value.split(" ")
-                sub_dic = create_tag("hardward", "cores", quantity)
-                dics.extend(sub_dic)
+                if len(sub_value.split(" ")) == 2:
+                    [quantity, unit] = sub_value.split(" ")
+                    sub_dic = create_tag("hardward", "cores", quantity)
+                    dics.extend(sub_dic)
 
-        subpart_dic = create_tag("subpart", "commponent", None, dics)
-        usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-        subpart_dic.extend(usp_dic)
-        return subpart_dic
+        if len(dics) != 0:
+            sub_dics = create_tag("identifier", "kind", "cpu")
+            dics.extend(sub_dics)
+            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+            subpart_dic.extend(usp_dic)
+            return subpart_dic
+        else:
+            return dics
 
 
 def _graphs_audio(value):
