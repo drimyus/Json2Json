@@ -170,7 +170,7 @@ def _storage(value):
                 sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
-        subpart_dic = create_tag("subpart", "commponent", dics)
+        subpart_dic = create_tag("subpart", "commponent", None, dics)
         usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
         return [subpart_dic, usp_dic]
 
@@ -203,7 +203,7 @@ def _memory(value):
                 sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
-        subpart_dic = create_tag("subpart", "commponent", dics)
+        subpart_dic = create_tag("subpart", "commponent", None, dics)
         usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
         subpart_dic.extend(usp_dic)
         return subpart_dic
@@ -362,7 +362,7 @@ def _processor(value):
             sub_dic = create_tag("hardward", "cores", quantity)
             dics.extend(sub_dic)
 
-    subpart_dic = create_tag("subpart", "commponent", dics)
+    subpart_dic = create_tag("subpart", "commponent", None, dics)
     usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
     subpart_dic.extend(usp_dic)
     return subpart_dic
@@ -394,7 +394,7 @@ def _graphs_audio(value):
                 sub_dic = create_tag("identifier", "brand", "AMD")
                 dics.extend(sub_dic)
 
-    subpart_dic = create_tag("subpart", "commponent", dics)
+    subpart_dic = create_tag("subpart", "commponent", None, dics)
     usp_dic = create_tag("usp", "id", None, subpart_dic[0]["id"])
     subpart_dic.extend(usp_dic)
     return subpart_dic
