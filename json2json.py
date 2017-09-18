@@ -10,18 +10,16 @@ Structure = ["id", "title", "url", "image_url", "description",
 Sub_Structure = ["technical_specification"]
 Categories, Types = None, None
 
-global_id = "e5a05170-7f44-45ed-bd49-1b2ced344e81"
-
 
 def load_SourceData(json_path):
 
     # load source data json
     cnt = 0
-    origin = "./data/result/new_product"
+    origin = "./data/new_result/new_product"
     with open(json_path, encoding='utf-8') as f:
         for line in f:
             cnt += 1
-            sys.stdout.write("\r{}".format(cnt))
+            sys.stdout.write("=================line number : {}\n".format(cnt))
 
             fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
@@ -31,6 +29,20 @@ def load_SourceData(json_path):
                 json.dump(product_obj, pro_file, ensure_ascii=False, indent=2)
 
             sys.stdout.flush()
+
+
+def num(s):
+    try:
+        return int(s)
+    except ValueError:
+        if s.find(",") != -1:
+            s = s.replace(",", ".")
+            try:
+                return float(s)
+            except ValueError:
+                print("=============", s)
+        else:
+            print("=============", s)
 
 
 def parse_line(json_obj):
@@ -54,24 +66,24 @@ def high_level(key, value, json_object):
 
     dics = None
 
-    if key == 'id'.lower():
+    if key.lower() == 'id'.lower():
         dics = create_tag("identifier", "id_netonnet", value)
-    elif key == "title".lower():
+    elif key.lower() == "title".lower():
         dics = create_tag("meta", "title", value)
-    elif key == "url".lower():
+    elif key.lower() == "url".lower():
         dics = create_tag("meta", "url", value)
 
-    elif key == "image_url".lower():
+    elif key.lower() == "image_url".lower():
         if isinstance(value, list):
             dics = []
             for val in value:
                 dics.extend(create_tag("meta", "image", val))
 
-    elif key == "description_html".lower():
+    elif key.lower() == "description_html".lower():
         new_value = erase_description_html(value)
         dics = create_tag("meta", "description", new_value)
 
-    elif key == "Category".lower():
+    elif key.lower() == "Category".lower():
         if isinstance(value, dict):
             str = None
             for sub_key, sub_value in value.items():
@@ -84,25 +96,32 @@ def high_level(key, value, json_object):
                     break
             if str is not None:
                 dics = create_tag("category", "tag", str, create_tag("parent", "tag", global_id))
+                # dics.extend(create_tag("identifier", "customer_id", global_customer_id))
+                # dics.extend(create_tag("identifier", "name", global_product_name))
 
-    elif key == "bulleted_text".lower():
-        dics = create_tag("meta", "description", value)
+    # elif key.lower() == "bulleted_text".lower():
+    #     dics = create_tag("meta", "description", value)
 
-    elif key == "price".lower():
+    elif key.lower() == "price".lower():
         if "currency" in json_object.keys():
             sub_value = json_object["currency"]
             dics = create_tag("price", "original", value, create_tag("unit", "currency", sub_value))
         else:
             pass
 
-    elif key == "brand".lower():
+    elif key.lower() == "brand".lower():
         dics = create_tag("identifier", "brand", value)
 
-    elif key == "technical_specifications".lower():
+    elif key.lower() == "technical_specifications".lower():
         dics = []
         for spec_key, spec_obj in value.items():
             spec_key = swe2eng.translate_SweToEng(spec_key.lower())
-            dics.extend(tech_specs(spec_key, spec_obj))
+
+            print(spec_key)
+
+            dic = tech_specs(spec_key, spec_obj)
+            if dic is not None:
+                dics.extend(tech_specs(spec_key, spec_obj))
     return dics
 
 
@@ -138,29 +157,33 @@ def erase_description_html(string):
             break
 
     string = string.replace('\"', '\'')
+    string = string.replace('\"', '')
+    string = string.replace('\t', '')
+    string = string.replace('\n', '')
+    string = string.replace('\r', '')
     return string
 
 
 def tech_specs(key, value):
     dics = None
 
-    if key == "Storage".lower():
+    if key.lower() == "Storage".lower():
         dics = _storage(value)
-    elif key == "Memory".lower():
+    elif key.lower() == "Memory".lower():
         dics = _memory(value)
-    elif key == "Connenctions".lower():
+    elif key.lower() == "Connections".lower():
         dics = _connections(value)
-    elif key == "Chassis".lower():
+    elif key.lower() == "Chassis".lower():
         dics = _chassis(value)
-    elif key == "Support and Warranty".lower():
+    elif key.lower() == "Support and Warranty".lower():
         dics = _support_warranty(value)
-    elif key == "Communication".lower():
+    elif key.lower() == "Communication".lower():
         dics = _communication(value)
-    elif key == "Processor".lower():
+    elif key.lower() == "Processor".lower():
         dics = _processor(value)
-    elif key == "Graphics and Audio".lower() or "Graphics and Sounds":
+    elif key.lower() == "Graphics and Audio".lower() or key.lower() == "Graphics and Sounds".lower():
         dics = _graphs_audio(value)
-    elif key == "General".lower():
+    elif key.lower() == "Generally".lower():
         dics = _general(value)
 
     return dics
@@ -173,24 +196,26 @@ def _storage(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "primary hard drive size".lower():
+            if sub_key.lower() == "primary hard drive size".lower():
                 if len(sub_value.split(" ")) != 2:
                     break
                 [quantity, unit] = sub_value.split(" ")
                 unit = swe2eng.translate_SweToEng(unit)
-                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
                 dics.extend(sub_dics)
 
-            elif sub_key == "primary hard drive type".lower():
+            elif sub_key.lower() == "primary hard drive type".lower():
                 sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
         if len(dics) != 0:
             sub_dics = create_tag("identifier", "kind", "storage")
             dics.extend(sub_dics)
-            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            subpart_dic = create_tag("subpart", "component", None, dics)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-            return [subpart_dic, usp_dic]
+            subpart_dic.extend(usp_dic)
+            return subpart_dic
+
         else:
             return dics
 
@@ -202,30 +227,30 @@ def _memory(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "memory Include".lower():
+            if sub_key.lower() == "memory Included".lower():
 
                 [quantity, unit] = sub_value.split(" ")
                 unit = swe2eng.translate_SweToEng(unit)
-                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
                 dics.extend(sub_dics)
 
-            elif sub_key == "memory type".lower():
+            elif sub_key.lower() == "memory type".lower():
                 sub_dic = create_tag("technology", "technology", sub_value)
                 dics.extend(sub_dic)
 
-            elif sub_key == "memory speed".lower():
+            elif sub_key.lower() == "memory speed".lower():
                 qua_unit = sub_value.split(" ")
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 if len(qua_unit) != 2:
                     break
                 unit = swe2eng.translate_SweToEng(unit)
-                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "frequency", unit))
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
         if len(dics) != 0:
             sub_dics = create_tag("identifier", "kind", "working_memory")
             dics.extend(sub_dics)
-            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            subpart_dic = create_tag("subpart", "component", None, dics)
             usp_dic = create_tag("usp", "id",  subpart_dic[0]["id"], None)
             subpart_dic.extend(usp_dic)
             return subpart_dic
@@ -240,20 +265,29 @@ def _connections(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "HDMI".lower():
-                sub_dics = create_tag("connection", "type", "hdmi", create_tag("size", "quantity", sub_value))
+            qua_unit = sub_value.split(" ")
+            if len(qua_unit) != 2:
+                continue
+            quantity = num(qua_unit[0])
+
+            if sub_key.lower() == "HDMI".lower():
+                sub_dics = create_tag("connection", "type", "hdmi", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
 
-            elif sub_key == "RJ45".lower():
-                sub_dics = create_tag("connection", "type", "rj45", create_tag("size", "quantity", sub_value))
+            elif sub_key.lower() == "RJ45".lower():
+                sub_dics = create_tag("connection", "type", "rj45", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
 
-            elif sub_key == "usb 30 port".lower():
-                sub_dics = create_tag("connection", "type", "usb30", create_tag("size", "quantity", sub_value))
+            elif sub_key.lower() == "usb 30 ports".lower():
+                sub_dics = create_tag("connection", "type", "usb30", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
 
-            elif sub_key == "thunderbolt".lower():
-                sub_dics = create_tag("connection", "type", "thunderbolt", create_tag("size", "quantity", sub_value))
+            elif sub_key.lower() == "usb 20 ports".lower():
+                sub_dics = create_tag("connection", "type", "usb20", create_tag("size", "quantity", quantity))
+                dics.extend(sub_dics)
+
+            elif sub_key.lower() == "thunderbolt".lower():
+                sub_dics = create_tag("connection", "type", "thunderbolt", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
 
         return dics
@@ -266,11 +300,10 @@ def _chassis(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Height".lower():
+            if sub_key.lower() == "Height".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
                     break
-
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
@@ -278,17 +311,20 @@ def _chassis(value):
                     unit = "millimetre"
                 if unit.lower() == "cm":
                     unit = "centimetre"
-                sub_dics = create_tag("size", "height", quantity, create_tag("unit", "metric", unit))
+                sub_dics = create_tag("size", "height", num(quantity), create_tag("unit", "metric", unit))
                 dics.extend(sub_dics)
 
-            elif sub_key == "RJ45".lower():
-                [quantity, unit] = sub_value.split(" ")
+            elif sub_key.lower() == "Width".lower():
+                qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    break
+                quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
                 if unit.lower() == "mm":
                     unit = "millimetre"
                 if unit.lower() == "cm":
                     unit = "centimetre"
-                sub_dics = create_tag("size", "width", quantity, create_tag("unit", "metric", unit))
+                sub_dics = create_tag("size", "width", num(quantity), create_tag("unit", "metric", unit))
                 dics.extend(sub_dics)
 
         return dics
@@ -301,11 +337,11 @@ def _support_warranty(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Support Number".lower():
+            if sub_key.lower() == "Support Number".lower():
                 sub_dics = create_tag("meta", "number", sub_value)
                 dics.extend(sub_dics)
 
-            elif sub_key == "Warranty Hardware".lower():
+            elif sub_key.lower() == "Warranty Hardware".lower():
                 qua_unit = sub_value.split(" ")
 
                 if len(qua_unit) != 2:
@@ -313,7 +349,7 @@ def _support_warranty(value):
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
-                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "time", unit))
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "time", unit))
                 dics.extend(sub_dics)
 
         feature_dic = create_tag("feature", "warranty", "hardware", dics)
@@ -327,16 +363,16 @@ def _communication(value):
         for sub_key, sub_val in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Wireless Network".lower():
+            if sub_key.lower() == "Wireless Network".lower():
                 sub_dics = create_tag("technology", "technology", sub_val)
                 super_dic = create_tag("communication", "type", "wifi", sub_dics)
                 dics.extend(super_dic)
 
-            if sub_key == "Fixed Network".lower():
+            if sub_key.lower() == "Fixed Network".lower():
                 qua_unit = sub_val.split(" ")
                 quantity = qua_unit[0][:qua_unit[0].find('bit/s')-1]
 
-                sub_dics = create_tag("size", "quantity", quantity, create_tag("unit", "speed", "Mbit/s"))
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "speed", "Mbit/s"))
                 super_dic = create_tag("communication", "type", "ethernet", sub_dics)
                 dics.extend(super_dic)
         return dics
@@ -349,29 +385,29 @@ def _processor(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Manufacturer".lower():
+            if sub_key.lower() == "Manufacturer".lower():
                 sub_dic = create_tag("identifier", "brand", sub_value)
                 dics.extend(sub_dic)
 
-            if sub_key == "Model".lower():
+            if sub_key.lower() == "Model".lower():
                 sub_dic = create_tag("identifier", "model", sub_value)
                 dics.extend(sub_dic)
 
-            if sub_key == "Processor Series".lower():
+            if sub_key.lower() == "Processor Series".lower():
                 sub_dic = create_tag("identifier", "series", sub_value)
                 dics.extend(sub_dic)
 
-            if sub_key == "Base Speed".lower() or sub_key == "Bass Speed".lower():
+            if sub_key.lower() == "Base Speed".lower() or sub_key.lower() == "Bass Speed".lower():
                 if len(sub_value.split(" ")) == 2:
                     [quantity, unit] = sub_value.split(" ")
                     unit = swe2eng.translate_SweToEng(unit)
                     tags = []
                     tags.extend(create_tag("unit", "frequency", unit))
                     tags.extend(create_tag("identifier", "version", "base"))
-                    sub_dics = create_tag("size", "quantity", quantity, tags)
+                    sub_dics = create_tag("size", "quantity", num(quantity), tags)
                     dics.extend(sub_dics)
 
-            if sub_key == "Max Turbo".lower():
+            if sub_key.lower() == "Max Turbo".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
                     break
@@ -380,19 +416,19 @@ def _processor(value):
                 tags = []
                 tags.extend(create_tag("unit", "frequency", unit))
                 tags.extend(create_tag("identifier", "version", "boost"))
-                sub_dics = create_tag("size", "quantity", quantity, tags)
+                sub_dics = create_tag("size", "quantity", num(quantity), tags)
                 dics.extend(sub_dics)
 
-            elif sub_key == "Number of Kernels".lower() or sub_key == "Number of Cores".lower():
+            elif sub_key.lower() == "Number of Kernels".lower() or sub_key.lower() == "Number of Cores".lower():
                 if len(sub_value.split(" ")) == 2:
                     [quantity, unit] = sub_value.split(" ")
-                    sub_dic = create_tag("hardward", "cores", quantity)
+                    sub_dic = create_tag("hardware", "cores", num(quantity))
                     dics.extend(sub_dic)
 
         if len(dics) != 0:
             sub_dics = create_tag("identifier", "kind", "cpu")
             dics.extend(sub_dics)
-            subpart_dic = create_tag("subpart", "commponent", None, dics)
+            subpart_dic = create_tag("subpart", "component", None, dics)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
             subpart_dic.extend(usp_dic)
             return subpart_dic
@@ -408,17 +444,17 @@ def _graphs_audio(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Dedicated graphics memory".lower():
+            if sub_key.lower() == "Dedicated graphics memory".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
                     break
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
-                sub_dic = create_tag("size", "quantity", quantity, create_tag("unit", "storage", unit))
+                sub_dic = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
                 dics.extend(sub_dic)
 
-            if sub_key == "Graphics Card".lower():
+            if sub_key.lower() == "Graphics Card".lower() or sub_key.lower() == "Video Card".lower():
                 sub_dic = create_tag("identifier", "name", sub_value)
                 dics.extend(sub_dic)
                 if sub_value.find("AMD") != -1:
@@ -428,7 +464,12 @@ def _graphs_audio(value):
         if len(dics) != 0:
             sub_dics = create_tag("identifier", "kind", "working_memory")
             dics.extend(sub_dics)
-            subpart_dic = create_tag("subpart", "commponent", None, dics)
+
+            sub_subpart_dic_1 = create_tag("identifier", "kind", "gpu")
+            sub_subpart_dic_2 = create_tag("subpart", "component", None, dics)
+            sub_subpart_dic_1.extend(sub_subpart_dic_2)
+
+            subpart_dic = create_tag("subpart", "component", None, sub_subpart_dic_1)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
             subpart_dic.extend(usp_dic)
             return subpart_dic
@@ -443,11 +484,11 @@ def _general(value):
         for sub_key, sub_val in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key == "Add Ard No.".lower():
+            if sub_key.lower() == "also available in Art".lower():
                 sub_dics = create_tag("identifier", "id_creator", sub_val)
                 dics.extend(sub_dics)
 
-            if sub_key == "Operating System".lower():
+            if sub_key.lower() == "Operating System".lower() or sub_key.lower() == "OS".lower():
                 sub_dics = create_tag("software", "os", sub_val)
                 dics.extend(sub_dics)
 
@@ -475,5 +516,7 @@ if __name__ == '__main__':
     source_fname = "./data/sourcedata (1).json"
 
     global_id = "e5a05170-7f44-45ed-bd49-1b2ced344e81"
+    global_customer_id = 8
+    global_product_name = "Mac Pro"
     load_SourceData(source_fname)
 

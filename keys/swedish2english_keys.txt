@@ -144,7 +144,7 @@ minneskortläsare:memory card reader
 minneskortstorlek (max):memory card size (max)
 minnesplatser:memory
 minnesstorlek:memory size
-minnestyp:memory
+minnestyp:memory type
 mjukvara:software
 modell:model
 multi-touch:multi-touch
@@ -152,7 +152,7 @@ mus:mouse
 numerisk sifferdel:numerical numeral
 operativsystem:OS
 optisk enhet:optical unit
-pci:PCI
+pci:pci
 pci x1:pci x1
 pci-e x16:pci-e x16
 pekdon:pointing device
@@ -253,3 +253,10 @@ widi:WiDi
 övriga funktioner:other features
 övriga programvaror:other software
 övrigt:Other
+mm:mm
+MHz:MHz
+mån:month
+MB:MB
+GB:GB
+GHz:GHz
+cm:cm

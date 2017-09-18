@@ -10,7 +10,7 @@ class Swedish_Keys:
         self.swe_txt = swe_txt
         self.swe2eng_txt = swe2eng_txt
 
-        self.swe_keys, self.eng_keys = [], []
+        self.swe_keys, self.eng_keys, self.eng_keys_BIG = [], [], []
 
         if os.path.isfile(swe2eng_txt):
             self.load_Swedish2English_Key_Dict(swe2eng_txt)
@@ -47,6 +47,8 @@ class Swedish_Keys:
                 [swe, eng] = line[:-1].split(":")
                 self.swe_keys.append(swe.lower())
                 self.eng_keys.append(eng.lower())
+                self.eng_keys_BIG.append(eng)
+
         # sys.stdout.write("swedish_keys: {}, english_keys: {}".format(len(self.swe_keys), len(self.eng_keys)))
 
     def translate_SweToEng(self, swe_key):
@@ -54,10 +56,11 @@ class Swedish_Keys:
             sys.stderr.write("plesae init the dictionary.\n")
             sys.exit(1)
         else:
-            if swe_key in self.swe_keys:
-                idx = self.swe_keys.index(swe_key)
-                return self.eng_keys[idx]
+            if swe_key.lower() in self.swe_keys:
+                idx = self.swe_keys.index(swe_key.lower())
+                return self.eng_keys_BIG[idx]
             else:
+                print(swe_key)
                 return swe_key
 
 
