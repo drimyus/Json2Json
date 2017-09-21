@@ -15,11 +15,13 @@ def load_SourceData(json_path):
 
     # load source data json
     cnt = 0
-    origin = "./data/new_result/new_product"
+    origin = "./data/result/product"
     with open(json_path, encoding='utf-8') as f:
         for line in f:
             cnt += 1
             sys.stdout.write("=================line number : {}\n".format(cnt))
+            if cnt != 3:
+                continue
 
             fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
@@ -29,6 +31,9 @@ def load_SourceData(json_path):
                 json.dump(product_obj, pro_file, ensure_ascii=False, indent=2)
 
             sys.stdout.flush()
+    print(len(swe2eng.unused_swe_keys), len(swe2eng.unused_eng_keys))
+    for i in range(len(swe2eng.unused_swe_keys)):
+        print(swe2eng.unused_swe_keys[i], "\t", swe2eng.unused_eng_keys[i])
 
 
 def num(s):
@@ -96,6 +101,7 @@ def high_level(key, value, json_object):
                     break
             if str is not None:
                 dics = create_tag("category", "tag", str, create_tag("parent", "tag", global_id))
+                dics.extend(create_tag("identifier", "kind", str))
                 # dics.extend(create_tag("identifier", "customer_id", global_customer_id))
                 # dics.extend(create_tag("identifier", "name", global_product_name))
 
