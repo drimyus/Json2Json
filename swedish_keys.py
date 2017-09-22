@@ -20,7 +20,6 @@ class Swedish_Keys:
         else:
             sys.stderr.write("incorrect dictionary txt file {}.\n".format(swe2eng_txt))
 
-
     def explore_Swedish_Keys(self, json_path):
         txt_path = self.swe_txt
         # load source data json
@@ -65,6 +64,7 @@ class Swedish_Keys:
         else:
             if swe_key.lower() in self.swe_keys:
 
+                # for checking the unused keys
                 if swe_key.lower() in self.unused_swe_keys:
                     iid = self.unused_swe_keys.index(swe_key.lower())
                     del_swe = self.unused_swe_keys[iid]
@@ -72,6 +72,7 @@ class Swedish_Keys:
 
                     self.unused_swe_keys.remove(del_swe)
                     self.unused_eng_keys.remove(del_eng)
+                ###
 
                 idx = self.swe_keys.index(swe_key.lower())
                 return self.eng_keys_BIG[idx]

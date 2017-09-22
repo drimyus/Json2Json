@@ -62,7 +62,7 @@ drivrutiner:drivers
 drivrutiner och mjukvara:drivers and software
 dvi:dvi
 effekt nã¤tdel:power utility
-effekt nätdel:power power supply
+effekt nätdel:power supply
 esata-portar:eSATA ports
 expansionskort:expansion
 fast nã¤tverk:fixed network
@@ -133,7 +133,7 @@ maximal upplã¶sning:maximum resolution
 maximal upplösning:maximum resolution
 maximalt minne:maximum memory
 mikrofoningã¥ng:mikrofoningã ¥ ng
-mikrofoningång:mic
+mikrofoningång:microphone
 minne:memory
 minne och lagring:memory and storage
 minne som ingã¥r:memory included
@@ -260,3 +260,9 @@ MB:MB
 GB:GB
 GHz:GHz
 cm:cm
+rmp:rpm
+Ljudingång:audio Input
+MagSafe:MagSafe
+Nej:No
+Ja:Yes
+Styrplatta:trackpad
