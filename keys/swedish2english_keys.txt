@@ -4,7 +4,6 @@ _id:_id
 3g (umts):3g (umts)
 3g:3g
 4g lte:4g lte
-ã¶vriga anslutningar:Other connections
 allmänt:generally
 anslutningar:connections
 antal celler:number of cells
@@ -20,7 +19,7 @@ bakgrundsbelyst tangentbord:backlit keyboard
 bashastighet:base speed
 batteri:Battery
 batterikapacitet:battery capacity
-batterityp:battery
+batterityp:battery type
 bildformat:aspect ratio
 bildskärm:screen
 bluetooth:bluetooth
@@ -57,9 +56,6 @@ dvi:dvi
 effekt nätdel:power supply
 esata-portar:eSATA ports
 expansionskort:expansion
-fã¤rg:color
-fã¶rinstallerade appar:preinstalled apps
-fã¶rpackningens innehã¥ll:the packaging contents
 färg:color
 fast nätverk:fixed network
 fast nätverksanslutning:fixed network connection
@@ -106,7 +102,6 @@ lediga minnesplatser:free memory locations
 lediga pci x1:available pci x1
 lediga pci:available pci
 lediga pci-e x16:available pci-e x16
-ljudformat som stã¶ds:supported audio formats
 ljudformat som stöds:supported audio formats
 Ljudingång:audio Input
 ljudkort:sound card
@@ -200,6 +195,7 @@ thunderbolt:thunderbolt
 tillv art nr:also available in Art
 tillverkare:manufacturer
 tillverkarens artikelnummer:Manufacturer Part Number
+tim:hour
 title:title
 touchskärm:touch screen
 touchteknik:touch technology
