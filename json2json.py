@@ -23,16 +23,15 @@ def load_uncatched_keys(txt_path):
 
 def load_SourceData(json_path):
 
-    print("================== load uncatched keys =======================")
-    "./data/sourcedata"
-    load_uncatched_keys("./data/uncatched_keys.txt")
-
     # load source data json
     cnt = 0
     origin = "./data/result/product"
     with open(json_path, encoding='utf-8') as f:
         for line in f:
             cnt += 1
+            if cnt != 157:
+                continue
+
             sys.stdout.write("=== line number : {}\n".format(cnt))
 
             fname = origin + "_" + str(cnt) + ".json"
@@ -44,11 +43,6 @@ def load_SourceData(json_path):
 
             sys.stdout.flush()
 
-    print("##################### still uncatched keys ######################")
-    print(len(swe2eng.unused_swe_keys), len(swe2eng.unused_eng_keys))
-    for i in range(len(swe2eng.unused_swe_keys)):
-        print(swe2eng.unused_swe_keys[i], "\t", swe2eng.unused_eng_keys[i])
-
 
 def num(s):
     try:
@@ -59,9 +53,11 @@ def num(s):
             try:
                 return float(s)
             except ValueError:
-                print("=============", s)
+                print("---", s)
+        elif s.find("0/") != -1:
+            return s
         else:
-            print("=============", s)
+            print("---", s)
 
 
 def parse_line(json_obj):
@@ -135,13 +131,51 @@ def high_level(key, value, json_object):
     elif key.lower() == "technical_specifications".lower():
         dics = []
         for spec_key, spec_obj in value.items():
-            spec_key = swe2eng.translate_SweToEng(spec_key.lower())
+            key = swe2eng.translate_SweToEng(spec_key.lower())
+            spec_value = spec_obj
+            print("=", key)
 
-            print("=", spec_key)
+            dic = None
 
-            dic = tech_specs(spec_key, spec_obj)
+            if key.lower() == "Storage".lower():
+                dic, top_dic = _storage(spec_value)
+            elif key.lower() == "Memory".lower():
+                dic = _memory(spec_value)
+            elif key.lower() == "Connections".lower():
+                dic = _connections(spec_value)
+            elif key.lower() == "Chassis".lower():
+                dic = _chassis(spec_value)
+            elif key.lower() == "Support and Warranty".lower():
+                dic = _support_warranty(spec_value)
+            elif key.lower() == "Communication".lower():
+                dic = _communication(spec_value)
+            elif key.lower() == "Processor".lower():
+                dic = _processor(spec_value)
+            elif key.lower() == "Graphics and Audio".lower() or key.lower() == "Graphics and Sounds".lower():
+                dic = _graphs_audio(spec_value)
+            elif key.lower() == "Generally".lower():
+                dic = _general(spec_value)
+            elif key.lower() == "screen".lower():
+                dic = _screen(spec_value)
+                if len(dic) != 0:
+
+                    sub_dic = create_tag("identifier", "kind", "screen")
+                    dic.extend(sub_dic)
+
+                    feature_swe_key = "Specialfunktioner"
+                    if feature_swe_key in value.keys():
+                        feature_value = value[feature_swe_key]
+                        sub_dic = _spec_feature(feature_value)
+                        dic.extend(sub_dic)
+
+                    subpart_dic = create_tag("subpart", "component", None, dic)
+                    usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+                    subpart_dic.extend(usp_dic)
+
+                dic = subpart_dic
+
             if dic is not None:
-                dics.extend(tech_specs(spec_key, spec_obj))
+                dics.extend(dic)
     return dics
 
 
@@ -184,43 +218,17 @@ def erase_description_html(string):
     return string
 
 
-def tech_specs(key, value):
-    dics = None
-
-    if key.lower() == "Storage".lower():
-        dics = _storage(value)
-    elif key.lower() == "Memory".lower():
-        dics = _memory(value)
-    elif key.lower() == "Connections".lower():
-        dics = _connections(value)
-    elif key.lower() == "Chassis".lower():
-        dics = _chassis(value)
-    elif key.lower() == "Support and Warranty".lower():
-        dics = _support_warranty(value)
-    elif key.lower() == "Communication".lower():
-        dics = _communication(value)
-    elif key.lower() == "Processor".lower():
-        dics = _processor(value)
-    elif key.lower() == "Graphics and Audio".lower() or key.lower() == "Graphics and Sounds".lower():
-        dics = _graphs_audio(value)
-    elif key.lower() == "Generally".lower():
-        dics = _general(value)
-
-    return dics
-
-
 def _storage(value):
     if isinstance(value, dict):
         dics = []
+        top_dics = []
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
 
             if sub_key.lower() == "primary hard drive size".lower():
                 if len(sub_value.split(" ")) != 2:
-                    break
+                    continue
                 [quantity, unit] = sub_value.split(" ")
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
@@ -231,7 +239,7 @@ def _storage(value):
 
             if sub_key.lower() == "secondary hard drive size".lower():
                 if len(sub_value.split(" ")) != 2:
-                    break
+                    continue
                 [quantity, unit] = sub_value.split(" ")
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
@@ -241,12 +249,14 @@ def _storage(value):
                 dics.extend(sub_dic)
 
             if sub_key.lower() == "memory card reader".lower():
-                sub_dic = create_tag("technology", "memorycard", sub_value)
-                dics.extend(sub_dic)
+                kinds = sub_value.split(" ")
+                for kind in kinds:
+                    sub_dic = create_tag("technology", "memorycard", kind)
+                    top_dics.extend(sub_dic)
 
             if sub_key.lower().find("speed hdd #".lower()) != -1:  # speed hdd # 1/2/3
                 if len(sub_value.split(" ")) != 2:
-                    break
+                    continue
                 [quantity, unit] = sub_value.split(" ")[:2]
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "speed", unit))
@@ -261,7 +271,7 @@ def _storage(value):
             return subpart_dic
 
         else:
-            return dics
+            return dics, top_dics
 
 
 def _memory(value):
@@ -270,8 +280,6 @@ def _memory(value):
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
 
             if sub_key.lower() == "memory Included".lower():
 
@@ -298,25 +306,27 @@ def _memory(value):
                 qua_unit = sub_value.split(" ")
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "frequency", unit))
                 dics.extend(sub_dics)
 
             elif sub_key.lower() == "memory".lower():
                 qua_unit = sub_value.split(" ")
-                quantity, unit = int(qua_unit[0]), qua_unit[-1]
                 if len(qua_unit) != 2:
-                    break
+                    continue
+                quantity, unit = int(qua_unit[0]), qua_unit[-1]
+
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("memory", "kind", "memory", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
 
             elif sub_key.lower() == "free memory locations".lower():
                 qua_unit = sub_value.split(" ")
-                quantity, unit = int(qua_unit[0]), qua_unit[-1]
                 if len(qua_unit) != 2:
-                    break
+                    continue
+                quantity, unit = int(qua_unit[0]), qua_unit[-1]
+
                 unit = swe2eng.translate_SweToEng(unit)
                 sub_dics = create_tag("memory", "kind", "memory", create_tag("size", "quantity", quantity))
                 dics.extend(sub_dics)
@@ -342,8 +352,7 @@ def _connections(value):
         dics = []
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
+
 
             qua_unit = sub_value.split(" ")
             if len(qua_unit) != 2:
@@ -415,13 +424,10 @@ def _chassis(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
-
             if sub_key.lower() == "Height".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
@@ -435,7 +441,7 @@ def _chassis(value):
             if sub_key.lower() == "Width".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
                 if unit.lower() == "mm":
@@ -448,7 +454,7 @@ def _chassis(value):
             if sub_key.lower() == "Depth".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
                 if unit.lower() == "mm":
@@ -460,18 +466,19 @@ def _chassis(value):
 
             if sub_key.lower() == "power supply".lower():
                 qua_unit = sub_value.lower()
-                qua = qua_unit[: qua_unit.find('w')]
-                sub_dics = create_tag("size", "powersource", int(qua), create_tag("unit", "metric", "watt"))
-                dics.extend(sub_dics)
+                if qua_unit.find('w') != -1:
+                    qua = qua_unit[: qua_unit.find('w')]
+                    sub_dics = create_tag("size", "powersource", int(qua), create_tag("unit", "metric", "watt"))
+                    dics.extend(sub_dics)
 
             if sub_key.lower() == "weight".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
                 if unit.lower() == "kg":
-                    unit = "killogram"
+                    unit = "kilogram"
                 if unit.lower() == "g":
                     unit = "gram"
                 sub_dics = create_tag("size", "weight", num(quantity), create_tag("unit", "metric", unit))
@@ -489,10 +496,6 @@ def _chassis(value):
                 sub_dics = create_tag("quality", "material", sub_value)
                 dics.extend(sub_dics)
 
-            if sub_key.lower() == "pointing device".lower():
-                sub_dics = create_tag("identifier", "kind", sub_value)
-                dics.extend(sub_dics)
-
         return dics
 
 
@@ -503,9 +506,6 @@ def _support_warranty(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
-
             if sub_key.lower() == "Support Number".lower():
                 sub_dics = create_tag("meta", "number", sub_value)
                 dics.extend(sub_dics)
@@ -514,7 +514,7 @@ def _support_warranty(value):
                 qua_unit = sub_value.split(" ")
 
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
@@ -525,7 +525,7 @@ def _support_warranty(value):
                 qua_unit = sub_value.split(" ")
 
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
@@ -542,9 +542,6 @@ def _communication(value):
         dics = []
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
 
             if sub_key.lower() == "Wireless Network".lower():
                 sub_dics = create_tag("technology", "technology", sub_value)
@@ -590,8 +587,7 @@ def _processor(value):
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
+
 
             if sub_key.lower() == "Manufacturer".lower():
                 sub_dic = create_tag("identifier", "brand", sub_value)
@@ -618,7 +614,7 @@ def _processor(value):
             if sub_key.lower() == "Max Turbo".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = num(qua_unit[0]), qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
                 tags = []
@@ -653,13 +649,12 @@ def _graphs_audio(value):
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
+
 
             if sub_key.lower() == "Dedicated graphics memory".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 unit = swe2eng.translate_SweToEng(unit)
 
@@ -669,7 +664,7 @@ def _graphs_audio(value):
             if sub_key.lower() == "speaker".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
-                    break
+                    continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
                 sub_dic = create_tag("identifier", "kind", "speaker", create_tag("size", "quantity", int(quantity)))
                 sound_dics.extend(sub_dic)
@@ -710,8 +705,7 @@ def _general(value):
         dics = []
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            if sub_key in uncatched_keys:
-                print(sub_key, "::", sub_value)
+
 
             if sub_key.lower() == "also available in Art".lower():
                 sub_dics = create_tag("identifier", "id_creator", sub_value)
@@ -720,6 +714,79 @@ def _general(value):
             if sub_key.lower() == "Operating System".lower() or sub_key.lower() == "OS".lower():
                 sub_dics = create_tag("software", "os", sub_value)
                 dics.extend(sub_dics)
+
+        return dics
+
+
+def _screen(value):
+    if isinstance(value, dict):
+        dics = []
+
+        for sub_key, sub_value in value.items():
+            sub_key = swe2eng.translate_SweToEng(sub_key.lower())
+
+            if sub_key.lower() == "screen size".lower():
+                [quantity, unit] = sub_value.split(" ")
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "imperial", "inch"))
+                dics.extend(sub_dics)
+
+            if sub_key.lower() == "aspect ratio".lower():
+
+                sub_dics = create_tag("size", "ratio", sub_value)
+                dics.extend(sub_dics)
+
+            elif sub_key.lower() == "maximum resolution".lower():
+                sub_dic = create_tag("size", "resolution", sub_value)
+                dics.extend(sub_dic)
+
+            elif sub_key.lower() == "display technology".lower():
+                sub_dic = create_tag("technology", "panel", sub_value)
+                dics.extend(sub_dic)
+
+            elif sub_key.lower() == "screen technology".lower():
+                sub_dic = create_tag("technology", "panel", sub_value)
+                dics.extend(sub_dic)
+
+            elif sub_key.lower() == "screen type".lower():
+                sub_dic = create_tag("identifier", "type", sub_value)
+                dics.extend(sub_dic)
+
+            elif sub_key.lower() == "screen surface".lower():
+                sub_dic = create_tag("identifier", "surface", sub_value)
+                dics.extend(sub_dic)
+
+        # if len(dics) != 0:
+        #     sub_dics = create_tag("identifier", "kind", "screen")
+        #     dics.extend(sub_dics)
+        #     subpart_dic = create_tag("subpart", "component", None, dics)
+        #     usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+        #     subpart_dic.extend(usp_dic)
+        #     return subpart_dic
+        # else:
+        #     return dics
+        return dics
+
+
+def _spec_feature(value):
+    if isinstance(value, dict):
+        dics = []
+
+        for sub_key, sub_value in value.items():
+            sub_key = swe2eng.translate_SweToEng(sub_key.lower())
+
+            if sub_key.lower().find("Other Features".lower()) != -1:
+                str = sub_value.lower()
+                pos = str.find(("Ljusstyrka på").lower())
+                if pos != -1:
+                    pos += len(("Ljusstyrka på").lower())
+                    sub = str[pos + 1:]
+                    quan_unit = sub.split(" ")
+                    if len(quan_unit) != 2:
+                        continue
+                    quan, unit = quan_unit[:2]
+                    sub_dics = create_tag("feature", "has", "brightness",
+                                          create_tag("size", "quantity", quan, create_tag("unit", "metric", "cd/m2")))
+                    dics.extend(sub_dics)
 
         return dics
 
