@@ -136,6 +136,7 @@ def high_level(key, value, json_object):
             print("=", key)
 
             dic = None
+            top_dic = None
 
             if key.lower() == "Storage".lower():
                 dic, top_dic = _storage(spec_value)
@@ -155,6 +156,8 @@ def high_level(key, value, json_object):
                 dic = _graphs_audio(spec_value)
             elif key.lower() == "Generally".lower():
                 dic = _general(spec_value)
+            elif key.lower() == "battery".lower():
+                dic = _battery(spec_value)
             elif key.lower() == "screen".lower():
                 dic = _screen(spec_value)
                 if len(dic) != 0:
@@ -176,6 +179,8 @@ def high_level(key, value, json_object):
 
             if dic is not None:
                 dics.extend(dic)
+            if top_dic is not None:
+                dics.extend(top_dic)
     return dics
 
 
@@ -249,7 +254,7 @@ def _storage(value):
                 dics.extend(sub_dic)
 
             if sub_key.lower() == "memory card reader".lower():
-                kinds = sub_value.split(" ")
+                kinds = sub_value.split(",")
                 for kind in kinds:
                     sub_dic = create_tag("technology", "memorycard", kind)
                     top_dics.extend(sub_dic)
@@ -268,7 +273,7 @@ def _storage(value):
             subpart_dic = create_tag("subpart", "component", None, dics)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
             subpart_dic.extend(usp_dic)
-            return subpart_dic
+            return subpart_dic, top_dics
 
         else:
             return dics, top_dics
@@ -789,6 +794,42 @@ def _spec_feature(value):
                     dics.extend(sub_dics)
 
         return dics
+
+
+def _battery(value):
+
+    if isinstance(value, dict):
+        dics = []
+        for sub_key, sub_value in value.items():
+            sub_key = swe2eng.translate_SweToEng(sub_key.lower())
+
+            if sub_key.lower() == "number of cells".lower():
+                sub_dics = create_tag("powersource", "cells", num(sub_value))
+                dics.extend(sub_dics)
+
+            if sub_key.lower() == "operating time (up to)".lower():
+
+                qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    continue
+                [quantity, unit] = qua_unit[:2]
+                unit = swe2eng.translate_SweToEng(unit)
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "time", "hour"))
+                dics.extend(sub_dics)
+
+            elif sub_key.lower() == "battery type".lower():
+                sub_dic = create_tag("technology", "technology", sub_value)
+                dics.extend(sub_dic)
+
+        if len(dics) != 0:
+            sub_dics = create_tag("identifier", "kind", "battery")
+            dics.extend(sub_dics)
+            subpart_dic = create_tag("subpart", "component", None, dics)
+            usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+            subpart_dic.extend(usp_dic)
+            return subpart_dic
+        else:
+            return dics
 
 
 def create_tag(category, type, value=None, tags=None):
