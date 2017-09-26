@@ -58,7 +58,8 @@ def num(s):
         elif s.find("0/") != -1:
             return s
         else:
-            pass  # print("---", s)
+            return s
+            # pass  # print("---", s)
 
 
 def parse_line(json_obj):
@@ -257,7 +258,7 @@ def _storage(value):
             if sub_key.lower() == "memory card reader".lower():
                 kinds = sub_value.split(",")
                 for kind in kinds:
-                    sub_dic = create_tag("technology", "memorycard", kind)
+                    sub_dic = create_tag("technology", "memorycard", kind.replace(" ", ""))
                     top_dics.extend(sub_dic)
 
             if sub_key.lower().find("speed hdd #".lower()) != -1:  # speed hdd # 1/2/3
@@ -608,7 +609,6 @@ def _processor(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-
             if sub_key.lower() == "Manufacturer".lower():
                 sub_dic = create_tag("identifier", "brand", sub_value)
                 dics.extend(sub_dic)
@@ -699,25 +699,35 @@ def _graphs_audio(value):
                     sub_dic = create_tag("identifier", "brand", "AMD")
                     brand_dics.extend(sub_dic)
 
-        if len(working_memory_dics) + len(sound_dics) + len(brand_dics) != 0:
-            sub_dics = create_tag("identifier", "kind", "working_memory")
-            working_memory_dics.extend(sub_dics)
+        res_dic = []
+        if len(working_memory_dics) + len(brand_dics) != 0:
+            if len(working_memory_dics) != 0:
+                id_dic = create_tag("identifier", "kind", "working_memory")
+                working_memory_dics.extend(id_dic)
+            if len(brand_dics) != 0:
+                working_memory_dics.extend(brand_dics)
 
-            sub_subpart_dic_1 = create_tag("identifier", "kind", "gpu")
-            sub_subpart_dic_2 = create_tag("subpart", "component", None, working_memory_dics)
-            sub_subpart_dic_1.extend(sub_subpart_dic_2)
+            sub_subpart_dic = create_tag("subpart", "component", None, working_memory_dics)
 
-            sub_subpart_dic_1.extend(brand_dics)
-            sub_subpart_dic_1.extend(sound_dics)
+            id_dic = create_tag("identifier", "kind", "gpu")
+            id_dic.extend(sub_subpart_dic)
 
-            subpart_dic = create_tag("subpart", "component", None, sub_subpart_dic_1)
+            subpart_dic = create_tag("subpart", "component", None, id_dic)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
-            subpart_dic.extend(usp_dic)
 
-            return subpart_dic
+            res_dic.extend(usp_dic)
+            res_dic.extend(subpart_dic)
 
-        else:
-            return working_memory_dics
+        if len(sound_dics) != 0:
+            id_dic = create_tag("identifier", "kind", "speaker")
+            sound_dics.extend(id_dic)
+            subpart_dic = create_tag("subpart", "component", None, sound_dics)
+            usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
+
+            res_dic.extend(usp_dic)
+            res_dic.extend(subpart_dic)
+
+        return res_dic
 
 
 def _general(value):
