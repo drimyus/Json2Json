@@ -295,15 +295,15 @@ def _memory(value):
             #     sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
             #     dics.extend(sub_dics)
 
-            # if sub_key.lower() == "maximum memory".lower():
-            #
-            #     qua_unit = sub_value.split(" ")
-            #     if len(qua_unit) != 2:
-            #         continue
-            #     [quantity, unit] = qua_unit[:2]
-            #     unit = swe2eng.translate_SweToEng(unit)
-            #     sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
-            #     dics.extend(sub_dics)
+            if sub_key.lower() == "maximum memory".lower():
+
+                qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    continue
+                [quantity, unit] = qua_unit[:2]
+                unit = swe2eng.translate_SweToEng(unit)
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
+                dics.extend(sub_dics)
 
             if sub_key.lower() == "memory type".lower():
                 sub_dic = create_tag("technology", "technology", sub_value)
@@ -640,7 +640,7 @@ def _processor(value):
                 tags = []
                 tags.extend(create_tag("unit", "frequency", unit))
                 tags.extend(create_tag("identifier", "version", "boost"))
-                sub_dics = create_tag("size", "quantity", num(quantity), tags)
+                sub_dics = create_tag("size", "quantity", quantity, tags)
                 dics.extend(sub_dics)
 
             elif sub_key.lower() == "Number of Kernels".lower() or sub_key.lower() == "Number of Cores".lower():
@@ -685,11 +685,11 @@ def _graphs_audio(value):
                 if len(qua_unit) != 2:
                     continue
                 quantity, unit = qua_unit[0], qua_unit[-1]
-                sub_dic = create_tag("identifier", "kind", "speaker", create_tag("size", "quantity", int(quantity)))
+                sub_dic = create_tag("size", "quantity", int(quantity))
                 sound_dics.extend(sub_dic)
 
             if sub_key.lower() == "sound card".lower():
-                sub_dic = create_tag("communication", "type", "soundcard", create_tag("identifier", "model", num(sub_value)))
+                sub_dic = create_tag("identifier", "model", num(sub_value))
                 sound_dics.extend(sub_dic)
 
             if sub_key.lower() == "Graphics Card".lower() or sub_key.lower() == "Video Card".lower():
@@ -707,10 +707,8 @@ def _graphs_audio(value):
             if len(brand_dics) != 0:
                 working_memory_dics.extend(brand_dics)
 
-            sub_subpart_dic = create_tag("subpart", "component", None, working_memory_dics)
-
             id_dic = create_tag("identifier", "kind", "gpu")
-            id_dic.extend(sub_subpart_dic)
+            id_dic.extend(working_memory_dics)
 
             subpart_dic = create_tag("subpart", "component", None, id_dic)
             usp_dic = create_tag("usp", "id", subpart_dic[0]["id"], None)
