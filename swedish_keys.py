@@ -78,7 +78,7 @@ class Swedish_Keys:
                 return self.eng_keys_BIG[idx]
 
             else:
-                print(swe_key)
+                # print(swe_key)
                 return swe_key
 
 

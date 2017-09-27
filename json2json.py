@@ -13,14 +13,6 @@ Categories, Types = None, None
 uncatched_keys = []
 
 
-def load_uncatched_keys(txt_path):
-    with open(txt_path, encoding='utf-8') as f:
-        for line in f:
-            key = line[:-1]
-            uncatched_keys.append(key)
-        # print(len(uncatched_keys))
-
-
 def load_SourceData(json_path):
 
     # load source data json
@@ -30,10 +22,7 @@ def load_SourceData(json_path):
         for line in f:
             cnt += 1
 
-            if cnt != 157:
-                continue
-
-            # sys.stdout.write("=== line number : {}\n".format(cnt))
+            print("line no : ", cnt)
 
             fname = origin + "_" + str(cnt) + ".json"
             source_obj = json.loads(line)
@@ -71,7 +60,6 @@ def parse_line(json_obj):
         high_level_dic = high_level(eng_key, value, json_obj)
 
         if high_level_dic is None:
-            # print(key, value)
             continue
 
         dic_list.extend(high_level_dic)
@@ -132,7 +120,7 @@ def high_level(key, value, json_object):
         for spec_key, spec_obj in value.items():
             key = swe2eng.translate_SweToEng(spec_key.lower())
             spec_value = spec_obj
-            # print("=", key)
+            print("     =", key)
 
             dic = None
             top_dic = None
@@ -288,12 +276,11 @@ def _memory(value):
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
-            # if sub_key.lower() == "memory Included".lower():
-            #
-            #     [quantity, unit] = sub_value.split(" ")
-            #     unit = swe2eng.translate_SweToEng(unit)
-            #     sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
-            #     dics.extend(sub_dics)
+            if sub_key.lower() == "memory Included".lower():
+                [quantity, unit] = sub_value.split(" ")
+                unit = swe2eng.translate_SweToEng(unit)
+                sub_dics = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
+                dics.extend(sub_dics)
 
             if sub_key.lower() == "maximum memory".lower():
 
@@ -567,17 +554,6 @@ def _communication(value):
                 sub_dics = create_tag("communication", "type", "bluetooth", create_tag("identifier", "version", sub_value))
                 dics.extend(sub_dics)
 
-            if sub_key.lower() == "resolution still image".lower():
-                qua_unit = sub_value.split(" ")
-                if len(qua_unit) != 2:
-                    continue
-                sub_dics = create_tag("size", "resolution", num(qua_unit[0]),
-                                      create_tag("unit", "resolution", qua_unit[1]))
-                sub_dics.extend(create_tag("identifier", "version", "still"))
-
-                super_dic = create_tag("communication", "type", "webcam", sub_dics)
-                dics.extend(super_dic)
-
             if sub_key.lower() == "Resolution Video".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
@@ -671,6 +647,16 @@ def _graphs_audio(value):
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
 
             if sub_key.lower() == "shared graphics memory".lower():
+                qua_unit = sub_value.split(" ")
+                if len(qua_unit) != 2:
+                    continue
+                quantity, unit = qua_unit[0], qua_unit[-1]
+                unit = swe2eng.translate_SweToEng(unit)
+
+                sub_dic = create_tag("size", "quantity", num(quantity), create_tag("unit", "storage", unit))
+                working_memory_dics.extend(sub_dic)
+
+            if sub_key.lower() == "dedicated graphics memory".lower():
                 qua_unit = sub_value.split(" ")
                 if len(qua_unit) != 2:
                     continue
@@ -801,7 +787,6 @@ def _spec_feature(value):
 
         for sub_key, sub_value in value.items():
             sub_key = swe2eng.translate_SweToEng(sub_key.lower())
-            print(sub_key, sub_value)
 
             if sub_key.lower().find("Other Features".lower()) != -1:
                 str = sub_value.lower()
